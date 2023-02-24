@@ -1,11 +1,9 @@
 import { FunctionComponent, ComponentClass } from 'react';
+import elements from './elements';
 
-export type ReactNode =
-  | string
-  | FunctionComponent<any>
-  | ComponentClass<any, any>;
+export type ReactNode = FunctionComponent<any> | ComponentClass<any, any>;
 
-export type ReactNodeWithIdentifier = ReactNode & {
+export type AtyledReactNode = ReactNode & {
   __ATYLED__: {
     element: ReactNode;
     styleBlock: string;
@@ -25,3 +23,15 @@ export type StyleManager = {
   add: (styleBlock: string) => string;
   cleanUpSelectors: (selectors: string) => string;
 };
+
+export type AtyledElements = {
+  [K in typeof elements[number]]: ([
+    blockString,
+  ]: TemplateStringsArray) => AtyledReactNode;
+};
+
+export type AtyledConstructor = (
+  element: AtyledReactNode
+) => ([blockString]: TemplateStringsArray) => AtyledReactNode;
+
+export type Atyled = AtyledConstructor & AtyledElements;

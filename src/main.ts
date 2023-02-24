@@ -5,7 +5,7 @@ import {
   createStyleManager,
 } from '../src/core';
 import elements from './elements';
-import { ReactNodeWithIdentifier } from './type';
+import type {Atyled, AtyledElements, AtyledReactNode } from './type';
 
 // TODO: should change to brand name
 export function createAtyled() {
@@ -16,21 +16,22 @@ export function createAtyled() {
   const selectorsManager = createSelectorsManager();
   const styleManager = createStyleManager(selectorsManager, rulesManager);
 
-  function atyled(element: ReactNodeWithIdentifier) {
-    return ([atyledString]: [string]) => {
+
+  function atyled(element: AtyledReactNode) {
+    return ([blockString] :TemplateStringsArray) => {
       if (element.__ATYLED__) {
         return createComponent(
           styleManager,
           element.__ATYLED__.element,
           `atyled(${element.displayName})`,
-          `${element.__ATYLED__.styleBlock}${atyledString}`
+          `${element.__ATYLED__.styleBlock}${blockString}`
         );
       } else {
         return createComponent(
           styleManager,
           element,
           `atyled(${element.displayName || (element as any).name})`,
-          atyledString
+          blockString
         );
       }
     };
@@ -38,14 +39,14 @@ export function createAtyled() {
 
   elements.forEach(
     element =>
-      ((atyled as any)[element] = ([atyledString]: [string]) =>
-        createComponent(
-          styleManager,
-          element,
-          `atyled(${element})`,
-          atyledString
-        ))
+      (((atyled as unknown) as AtyledElements)[element] = ([blockString]: TemplateStringsArray) =>
+      createComponent(
+        styleManager,
+        element,
+        `atyled(${element})`,
+        blockString
+      ))
   );
 
-  return atyled;
+  return atyled as Atyled;
 }

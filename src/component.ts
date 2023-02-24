@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { ReactNode, StyleManager } from './type';
+import type { ReactNode, StyleManager, AtyledReactNode } from './type';
 
 export function createComponent(
   styleManager: StyleManager,
-  element: ReactNode,
+  element: string | ReactNode,
   displayName: string,
   styleBlock: string
-) {
+): AtyledReactNode {
   function Component(props: any) {
     const selectors = React.useMemo<string>(() => {
       const selectors = styleManager.add(styleBlock);
@@ -36,5 +36,5 @@ export function createComponent(
     styleBlock,
   };
 
-  return Component;
+  return Component as AtyledReactNode;
 }

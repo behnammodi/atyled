@@ -6,7 +6,7 @@ describe('main', () => {
   const atyled = createAtyled();
 
   test('should render a div without any classes', () => {
-    const Component = (atyled as any).div``
+    const Component = atyled.div``
 
     const result = renderToString(<Component />);
 
@@ -14,7 +14,7 @@ describe('main', () => {
   });
 
   test('should render a div with a passed class name', () => {
-    const Component = (atyled as any).div``
+    const Component = atyled.div``
 
     const result = renderToString(<Component className="a" />);
 
@@ -22,7 +22,7 @@ describe('main', () => {
   });
 
   test('should render a div with a passed class name and 1 additional class', () => {
-    const Component = (atyled as any).div`
+    const Component = atyled.div`
     a: b;    
     `
 
@@ -32,7 +32,7 @@ describe('main', () => {
   });
 
   test('should render a div with a passed class name and 3 additional class', () => {
-    const Component = (atyled as any).div`
+    const Component = atyled.div`
     a: b;
     b: b;
     c: d    
@@ -44,9 +44,9 @@ describe('main', () => {
   });
 
   test('should has atyled(atyled(div)) as displayName', () => {
-    const Component = (atyled as any).div``;
+    const Component = atyled.div``;
 
-    const Component2 = (atyled as any)(Component)``
+    const Component2 = atyled(Component)``
 
     renderToString(<Component2 />);
 
