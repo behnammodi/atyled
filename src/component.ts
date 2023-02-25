@@ -5,11 +5,11 @@ export function createComponent(
   styleManager: StyleManager,
   element: string | ReactNode,
   displayName: string,
-  styleBlock: string
+  declarationBlock: string
 ): AtyledReactNode {
   function Component(props: any) {
     const selectors = React.useMemo<string>(() => {
-      const selectors = styleManager.add(styleBlock);
+      const selectors = styleManager.add(declarationBlock);
       return selectors;
     }, []);
 
@@ -33,7 +33,7 @@ export function createComponent(
 
   Component.__ATYLED__ = {
     element,
-    styleBlock,
+    declarationBlock,
   };
 
   return Component as AtyledReactNode;

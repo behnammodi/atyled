@@ -5,12 +5,15 @@ export function createStyleManager(
   rulesManager: RulesManager
 ): StyleManager {
   const selectorsCache = new Map<string, string>();
-  const styleBlockCache = new Map<string, string>();
-  const beginBracket = "{";
-  const endBracket = "}"
-  const combinator = "&"
+  const declarationBlockCache = new Map<string, string>();
+  const declarationStart = '{';
+  const declarationEnd = '}';
+  const combinator = '&';
 
-  function createSelectorAndRule(line: string, additionalSelector: string = ''): string{
+  function createSelectorAndRule(
+    line: string,
+    additionalSelector: string = ''
+  ): string {
     let [property, value] = line.split(':');
     property = property.trim();
     value = value.trim();
@@ -22,34 +25,46 @@ export function createStyleManager(
     return selector;
   }
 
-  function createLineByPlainString(plain: string): string[]{
-    return plain.trim()
-    .split(';')
-    .filter(item => !!item)
+  function createDeclarationFromDeclarationBlock(plain: string): string[] {
+    return plain
+      .trim()
+      .split(';')
+      .filter(item => !!item);
   }
 
-  function add(styleBlock: string): string {
-    if(styleBlockCache.has(styleBlock)){
-      return styleBlockCache.get(styleBlock) as string;
+  function add(declarationBlock: string): string {
+    if (declarationBlockCache.has(declarationBlock)) {
+      return declarationBlockCache.get(declarationBlock) as string;
     }
 
-    const [mainStyleBlock, ...moreStyleBlocks] = styleBlock.split(combinator);
+    const [
+      mainDeclarationBlock,
+      ...moreDeclarationBlocks
+    ] = declarationBlock.split(combinator);
 
-    const mainLines = createLineByPlainString(mainStyleBlock);    
-    const mainSelector = mainLines.map(item => createSelectorAndRule(item))
+    const mainDeclarations = createDeclarationFromDeclarationBlock(
+      mainDeclarationBlock
+    );
+    const mainSelectors = mainDeclarations.map(item =>
+      createSelectorAndRule(item)
+    );
 
-    const moreSelectors = moreStyleBlocks
-    .map(moreStyleBlock => {
-      let [selector, styleBlock] = moreStyleBlock.split(beginBracket);
+    const moreSelectors = moreDeclarationBlocks.map(moreDeclarationBlock => {
+      let [selector, declarationBlock] = moreDeclarationBlock.split(
+        declarationStart
+      );
       selector = selector.trim();
-      const moreLines = createLineByPlainString(styleBlock.replace(endBracket,""));
-      const moreSelector = moreLines.map(item => createSelectorAndRule(item, selector));
-      return moreSelector.join(' ');      
-    })
+      const moreDeclarations = createDeclarationFromDeclarationBlock(
+        declarationBlock.replace(declarationEnd, '')
+      );
+      return moreDeclarations
+        .map(item => createSelectorAndRule(item, selector))
+        .join(' ');
+    });
 
-    const selectors= [...mainSelector, ...moreSelectors].join(' ');
+    const selectors = [...mainSelectors, ...moreSelectors].join(' ');
 
-    styleBlockCache.set(styleBlock, selectors)
+    declarationBlockCache.set(declarationBlock, selectors);
 
     return selectors;
   }

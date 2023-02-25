@@ -14,18 +14,18 @@ export function createAtyled() {
   const styleManager = createStyleManager(selectorsManager, rulesManager);
 
   function atyled(element: AtyledReactNode) {
-    return ([blockString]: TemplateStringsArray) => {
+    return ([declarationBlock]: TemplateStringsArray) => {
       if (element.__ATYLED__) {
         const splitter = (content: string, index = content.indexOf('&')) => [
           content.substring(0, index),
           content.substring(index),
         ];
 
-        const [originalBlockStyle, restOfOriginalBlockStyles] = splitter(
-          element.__ATYLED__.styleBlock
+        const [originalDeclarationBlock, restOfOriginalDeclarationBlocks] = splitter(
+          element.__ATYLED__.declarationBlock
         );
-        const [overwriteBlockStyle, restOfOverwriteBlockStyles] = splitter(
-          blockString
+        const [overwriteDeclarationBlock, restOfOverwriteDeclarationBlocks] = splitter(
+          declarationBlock
         );
 
         return createComponent(
@@ -33,24 +33,18 @@ export function createAtyled() {
           element.__ATYLED__.element,
           `atyled(${element.displayName})`,
           `
-            ${originalBlockStyle}
-            ${overwriteBlockStyle}
-            ${restOfOriginalBlockStyles}
-            ${restOfOverwriteBlockStyles}
+            ${originalDeclarationBlock}
+            ${overwriteDeclarationBlock}
+            ${restOfOriginalDeclarationBlocks}
+            ${restOfOverwriteDeclarationBlocks}
           `
         );
-        /**
-         * I added & {} cause of it has conflict with pseudo classes, element and nested selector
-         * & {
-         *  ${blockString}
-         * }
-         */
       } else {
         return createComponent(
           styleManager,
           element,
           `atyled(${element.displayName || (element as any).name})`,
-          blockString
+          declarationBlock
         );
       }
     };
@@ -59,13 +53,13 @@ export function createAtyled() {
   elements.forEach(
     element =>
       (((atyled as unknown) as AtyledElements)[element] = ([
-        blockString,
+        declarationBlock,
       ]: TemplateStringsArray) =>
         createComponent(
           styleManager,
           element,
           `atyled(${element})`,
-          blockString
+          declarationBlock
         ))
   );
 
