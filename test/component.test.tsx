@@ -2,10 +2,10 @@ import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { createComponent } from '../src/component';
 import {
-  createRulesManager,
   createSelectorsManager,
-  createStyleManager,
-} from '../src/core';
+} from '../src/selectors-manager';
+import { createRulesManager } from '../src/rules-manager';
+import { createStyleManager } from '../src/style-manager'
 
 describe('component', () => {
   const styleElement = document.createElement('style');

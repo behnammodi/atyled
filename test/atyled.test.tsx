@@ -1,6 +1,6 @@
 import React from 'react';
 import { renderToString } from 'react-dom/server';
-import { createAtyled } from '../src/main';
+import { createAtyled } from '../src/atyled';
 
 describe('main', () => {
   const atyled = createAtyled();

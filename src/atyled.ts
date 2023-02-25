@@ -1,9 +1,9 @@
-import { createComponent } from '../src/component';
+import { createComponent } from './component';
 import {
-  createRulesManager,
-  createSelectorsManager,
-  createStyleManager,
-} from '../src/core';
+  createSelectorsManager,  
+} from './selectors-manager';
+import {createRulesManager} from './rules-manager';
+import {createStyleManager} from './style-manager';
 import elements from './elements';
 import type {Atyled, AtyledElements, AtyledReactNode } from './type';
 
