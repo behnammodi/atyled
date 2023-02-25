@@ -211,7 +211,7 @@ describe('createStyleManager', () => {
     expect(styleElement.sheet?.cssRules).toHaveLength(3);
   });
 
-  test('should create 3 additional class for :hover and ::before and > div', () => {
+  test('should create 3 additional class for :hover ::before > div and additional composition', () => {
     const { styleManager, styleElement } = createStyleManagerForEachTest();
     const selectors = styleManager.add(`
     a: b;
@@ -227,9 +227,14 @@ describe('createStyleManager', () => {
     & > div {
       b: c;
     }
+
+    & {
+      a: b;
+      c: d;
+    }
     `);
 
-    expect(selectors).toEqual('p0v0 p1v1 p2v1 p3v1');
+    expect(selectors).toEqual('p0v0 p1v1 p2v1 p3v1 p0v0 p4v2');
     expect((styleElement.sheet?.cssRules[0] as any).selectorText).toBe('.p0v0');
     expect((styleElement.sheet?.cssRules[1] as any).selectorText).toBe(
       '.p1v1:hover'
@@ -240,7 +245,8 @@ describe('createStyleManager', () => {
     expect((styleElement.sheet?.cssRules[3] as any).selectorText).toBe(
       '.p3v1> div'
     );
-    expect(styleElement.sheet?.cssRules).toHaveLength(4);
+    expect((styleElement.sheet?.cssRules[4] as any).selectorText).toBe('.p4v2');
+    expect(styleElement.sheet?.cssRules).toHaveLength(5);
   });
 
   test('should return p0v0', () => {
