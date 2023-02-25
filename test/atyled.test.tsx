@@ -113,17 +113,21 @@ describe('main', () => {
       a: b;
 
       &:hover {
-        a: c
+        a: c;
       }
     `;
 
     const Component2 = atyled(Component)`
       b: c;
+
+      &:hover {
+        a: d;
+      }
     `
 
     const result = renderToString(<Component2 />);
 
-    expect(result).toBe('<div class="p0v0 p1v1 p2v1"></div>')
+    expect(result).toBe('<div class="p0v0 p1v1 p2v2"></div>')
     expect(Component2.displayName).toBe('atyled(atyled(div))');
   });
 });
