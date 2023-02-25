@@ -14,6 +14,8 @@
 
 ## Example
 
+[Codesandbox](https://codesandbox.io/s/atyled-example-1-vxhd58)
+
 ```js
 import atyled from 'atyled';
 
@@ -26,6 +28,12 @@ const Button = atyled.button`
   border: 2px solid #FF0000;
   margin: 0.5em 1em;
   padding: 0.25em 1em;  
+
+  &:hover {
+    color: orange;
+    background: gray;
+    border: 2px solid orange;
+  }
 `;
 
 const PrimaryButton = atyled(Button)`

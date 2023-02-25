@@ -24,8 +24,19 @@ export function createAtyled() {
           styleManager,
           element.__ATYLED__.element,
           `atyled(${element.displayName})`,
-          `${element.__ATYLED__.styleBlock}${blockString}`
+          `
+            ${element.__ATYLED__.styleBlock}
+            & {
+              ${blockString}
+            }
+          `
         );
+        /**
+         * I added & {} cause of it has conflict with pseudo classes, element and nested selector
+         * & {
+         *  ${blockString}
+         * }
+         */
       } else {
         return createComponent(
           styleManager,

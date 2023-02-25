@@ -90,4 +90,40 @@ describe('main', () => {
 
     expect(result).toBe('<div class="p0v0 p1v0 p2v0 p3v0 a"><div></div></div>');
   });
+
+  test('should handle composition styles', () => {
+    const atyled = createAtyled();
+    const Component = atyled.div`
+      a: b;
+    `;
+
+    const Component2 = atyled(Component)`
+      b: c;
+    `
+
+    const result = renderToString(<Component2 />);
+
+    expect(result).toBe('<div class="p0v0 p1v1"></div>')
+    expect(Component2.displayName).toBe('atyled(atyled(div))');
+  });
+
+  test('should handle composition styles with pseudo class', () => {
+    const atyled = createAtyled();
+    const Component = atyled.div`
+      a: b;
+
+      &:hover {
+        a: c
+      }
+    `;
+
+    const Component2 = atyled(Component)`
+      b: c;
+    `
+
+    const result = renderToString(<Component2 />);
+
+    expect(result).toBe('<div class="p0v0 p1v1 p2v1"></div>')
+    expect(Component2.displayName).toBe('atyled(atyled(div))');
+  });
 });
