@@ -6,11 +6,11 @@
 
 - It generate atomic classes
 - Final stylesheet is very optimized and small
-- It tiny and less than 2KB
+- It's tiny and less than 2KB
 - SSR support
-- Faster than styled-components
+- Faster than `styled-components`
 - No overwrite rules
-- No dependencies
+- No dependencies (if it is a benefit :))
 
 ## Example
 
