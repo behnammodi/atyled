@@ -5,6 +5,7 @@ export function createStyleManager(
   rulesManager: RulesManager
 ): StyleManager {
   const selectorsCache = new Map<string, string>();
+  const styleBlockCache = new Map<string, string>();
   const beginBracket = "{";
   const endBracket = "}"
   const combinator = "&"
@@ -27,7 +28,11 @@ export function createStyleManager(
     .filter(item => !!item)
   }
 
-  function add(styleBlock: string) {
+  function add(styleBlock: string): string {
+    if(styleBlockCache.has(styleBlock)){
+      return styleBlockCache.get(styleBlock) as string;
+    }
+
     const [mainStyleBlock, ...moreStyleBlocks] = styleBlock.split(combinator);
 
     const mainLines = createLineByPlainString(mainStyleBlock);    
@@ -43,6 +48,8 @@ export function createStyleManager(
     })
 
     const selectors= [...mainSelector, ...moreSelectors].join(' ');
+
+    styleBlockCache.set(styleBlock, selectors)
 
     return selectors;
   }
