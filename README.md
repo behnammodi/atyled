@@ -34,11 +34,25 @@ const Button = atyled.button`
     background: gray;
     border: 2px solid orange;
   }
+
+  &::before {
+    content: ' ★ ';
+    font-size: 15px;
+  }
 `;
 
 const PrimaryButton = atyled(Button)`
   --background: #FF0000;
   --color: white;
+
+  &:hover {
+    color: greenyellow;
+  }
+
+  &::before {
+    content: ' ☀︎ ';
+    font-size: 15px;
+  }
 `;
 
 const Container = atyled.div`

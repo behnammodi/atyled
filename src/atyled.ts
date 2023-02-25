@@ -5,7 +5,6 @@ import { createStyleManager } from './style-manager';
 import elements from './elements';
 import type { Atyled, AtyledElements, AtyledReactNode } from './type';
 
-// TODO: should change to brand name
 export function createAtyled() {
   const styleElement = document.createElement('style');
   document.head.append(styleElement);
