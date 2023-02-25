@@ -44,11 +44,11 @@ describe('createSelectorsManager', () => {
     expect(selector2).toBe('p1v1');
   });
 
-  test('should refers to pseudo class', () => {
+  test('should not refers to pseudo class', () => {
     const selectorsManager = createSelectorsManager();
     const selector = selectorsManager.add('a', 'b', ':hover');
 
-    expect(selector).toBe('p0v0:hover');
+    expect(selector).toBe('p0v0');
   });
 
   test('should keep same p as previous but value should be different', () => {
@@ -56,21 +56,21 @@ describe('createSelectorsManager', () => {
     const selector1 = selectorsManager.add('a', 'b', ':hover');
     const selector2 = selectorsManager.add('a', 'c', ':hover');
 
-    expect(selector1).toBe('p0v0:hover');
-    expect(selector2).toBe('p0v1:hover');
+    expect(selector1).toBe('p0v0');
+    expect(selector2).toBe('p0v1');
   });
 
-  test('should refers to pseudo element', () => {
+  test('should not refers to pseudo element', () => {
     const selectorsManager = createSelectorsManager();
     const selector = selectorsManager.add('a', 'b', '::before');
 
-    expect(selector).toBe('p0v0::before');
+    expect(selector).toBe('p0v0');
   });
 
-  test('should refers to nested tag', () => {
+  test('should not refers to nested tag', () => {
     const selectorsManager = createSelectorsManager();
     const selector = selectorsManager.add('a', 'b', ' > div');
 
-    expect(selector).toBe('p0v0 > div');
+    expect(selector).toBe('p0v0');
   });
 });

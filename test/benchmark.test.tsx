@@ -40,6 +40,19 @@ describe('benchmark', () => {
     position: absolute;
     left: 12%;
     top: 12%;
+
+    &:hover {
+      color: blue;
+      background-color: red;
+    }
+
+    &::before {
+      content: ' ';      
+    }
+
+    & > div {
+      display: none
+    }
 `
 
     const E = (styleEngine as any).button``
@@ -48,7 +61,9 @@ describe('benchmark', () => {
       [...Array(9999).fill(0)].map((value, index) => <A key={index}>
         <B>
           <C>
-            <D style={{ '--e': value }}></D>
+            <D style={{ '--e': value }}>
+              <div></div>
+            </D>
           </C>
           <E type="button">I'm button</E>
         </B>

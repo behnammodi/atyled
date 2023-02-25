@@ -29,17 +29,17 @@ export function createSelectorsManager(): SelectorsManager {
     return valueKey;
   }
 
-  function add(property: string, value: string, more: string = ''): string {
-    const propertyKey = addPropertyIfNotExist(`${property}${more}`);
+  function add(
+    property: string,
+    value: string,
+    additionalSelector: string = ''
+  ): string {
+    const propertyKey = addPropertyIfNotExist(
+      `${property}${additionalSelector}`
+    );
     const valueKey = addValueIfNotExist(value);
 
-    const pv = `${propertyKey}${valueKey}`;
-
-    if (more) {
-      return `${pv}${more}`;
-    }
-
-    return pv;
+    return `${propertyKey}${valueKey}`;
   }
 
   return { add };

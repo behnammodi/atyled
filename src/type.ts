@@ -16,7 +16,7 @@ export type RulesManager = {
 };
 
 export type SelectorsManager = {
-  add: (property: string, value: string, more?: string) => string;
+  add: (property: string, value: string, additionalSelector?: string) => string;
 };
 
 export type StyleManager = {

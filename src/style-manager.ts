@@ -5,32 +5,46 @@ export function createStyleManager(
   rulesManager: RulesManager
 ): StyleManager {
   const selectorsCache = new Map<string, string>();
+  const beginBracket = "{";
+  const endBracket = "}"
+  const combinator = "&"
 
-  function add(styleBlock: string) {
-    const [main, ...others] = styleBlock.split('&');
+  function createSelectorAndRule(line: string, additionalSelector: string = ''): string{
+    let [property, value] = line.split(':');
+    property = property.trim();
+    value = value.trim();
 
-    console.log = () => {};
-    console.log(others, main);
+    const selector = selectorsManager.add(property, value, additionalSelector);
 
-    const selector = main
-      .trim()
-      .split(';')
-      .filter(item => !!item)
-      .map(item => {
-        let [property, value] = item.split(':');
-
-        property = property.trim();
-        value = value.trim();
-
-        const selector = selectorsManager.add(property, value);
-
-        rulesManager.add(selector, property, value);
-
-        return selector;
-      })
-      .join(' ');
+    rulesManager.add(`${selector}${additionalSelector}`, property, value);
 
     return selector;
+  }
+
+  function createLineByPlainString(plain: string): string[]{
+    return plain.trim()
+    .split(';')
+    .filter(item => !!item)
+  }
+
+  function add(styleBlock: string) {
+    const [mainStyleBlock, ...moreStyleBlocks] = styleBlock.split(combinator);
+
+    const mainLines = createLineByPlainString(mainStyleBlock);    
+    const mainSelector = mainLines.map(item => createSelectorAndRule(item))
+
+    const moreSelectors = moreStyleBlocks
+    .map(moreStyleBlock => {
+      let [selector, styleBlock] = moreStyleBlock.split(beginBracket);
+      selector = selector.trim();
+      const moreLines = createLineByPlainString(styleBlock.replace(endBracket,""));
+      const moreSelector = moreLines.map(item => createSelectorAndRule(item, selector));
+      return moreSelector.join(' ');      
+    })
+
+    const selectors= [...mainSelector, ...moreSelectors].join(' ');
+
+    return selectors;
   }
 
   function cleanUpSelectors(selectors: string): string {
