@@ -51,7 +51,6 @@ const PrimaryButton = atyled(Button)`
 
   &::before {
     content: ' ☀︎ ';
-    font-size: 15px;
   }
 `;
 
