@@ -5,6 +5,31 @@ export function createRulesManager(
 ): RulesManager {
   const selectors = new Set<string>();
 
+  function assertCSSRulesIsAvailable(
+    CSSRules?: CSSRuleList
+  ): asserts CSSRules is CSSRuleList {
+    if (!CSSRules) throw 'cssRules not available';
+  }
+
+  function getStyleSheet(): string {
+    const valueToReturn: string[] = [];
+    const cssRules = styleElement.sheet?.cssRules;
+
+    assertCSSRulesIsAvailable(cssRules);
+
+    for (let cssRule in cssRules) {
+      valueToReturn.push(cssRules[cssRule].cssText);
+    }
+
+    return valueToReturn.join('\n');
+  }
+
+  function getStyleSheetWithTags(): string {
+    return `<style>
+${getStyleSheet()}
+</style>`;
+  }
+
   function createRule(
     selector: string,
     property: string,
@@ -25,5 +50,5 @@ export function createRulesManager(
     selectors.add(selector);
   }
 
-  return { add };
+  return { add, getStyleSheetWithTags, getStyleSheet };
 }

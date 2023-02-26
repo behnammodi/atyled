@@ -7,7 +7,7 @@ import type { Atyled, AtyledElements, AtyledReactNode } from './type';
 
 export function createAtyled() {
   const styleElement = document.createElement('style');
-  document.head.append(styleElement);
+  // document.head.append(styleElement);
 
   const rulesManager = createRulesManager(styleElement);
   const selectorsManager = createSelectorsManager();

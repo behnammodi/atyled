@@ -19,6 +19,14 @@ describe('createRulesManager', () => {
     const secondRule = (styleElement.sheet as CSSStyleSheet).cssRules[1] as any;
     expect(secondRule.selectorText).toBe('.d');
     expect(secondRule.style['e']).toBe('f');
+
+    expect(rulesManager.getStyleSheet()).toBe(`.a {b: c;}
+.d {e: f;}`);
+
+    expect(rulesManager.getStyleSheetWithTags()).toBe(`<style>
+.a {b: c;}
+.d {e: f;}
+</style>`);
   });
 
   test('should handle Pseudo Elements', () => {
@@ -43,6 +51,22 @@ describe('createRulesManager', () => {
       expect(firstRule.selectorText).toBe(`.${selector}`);
       expect(firstRule.style['b']).toBe('c');
     });
+
+    expect(rulesManager.getStyleSheet()).toBe(`.a::after {b: c;}
+.a::before {b: c;}
+.a::first-letter {b: c;}
+.a::first-line {b: c;}
+.a::marker {b: c;}
+.a::selection {b: c;}`);
+
+    expect(rulesManager.getStyleSheetWithTags()).toBe(`<style>
+.a::after {b: c;}
+.a::before {b: c;}
+.a::first-letter {b: c;}
+.a::first-line {b: c;}
+.a::marker {b: c;}
+.a::selection {b: c;}
+</style>`);
   });
 
   test('should handle Pseudo Classes', () => {
@@ -67,5 +91,21 @@ describe('createRulesManager', () => {
       expect(firstRule.selectorText).toBe(`.${selector}`);
       expect(firstRule.style['b']).toBe('c');
     });
+
+    expect(rulesManager.getStyleSheet()).toBe(`.a:active {b: c;}
+.a:first-child {b: c;}
+.a:first-of-type {b: c;}
+.a:lang(it) {b: c;}
+.a:not(p) {b: c;}
+.a:nth-child(2) {b: c;}`);
+
+    expect(rulesManager.getStyleSheetWithTags()).toBe(`<style>
+.a:active {b: c;}
+.a:first-child {b: c;}
+.a:first-of-type {b: c;}
+.a:lang(it) {b: c;}
+.a:not(p) {b: c;}
+.a:nth-child(2) {b: c;}
+</style>`);
   });
 });
