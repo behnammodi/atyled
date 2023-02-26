@@ -3,11 +3,11 @@ import { createSelectorsManager } from './selectors-manager';
 import { createRulesManager } from './rules-manager';
 import { createStyleManager } from './style-manager';
 import elements from './elements';
-import type { Atyled, AtyledElements, AtyledReactNode } from './type';
+import { Atyled, AtyledElements, AtyledReactNode } from './type';
 
 export function createAtyled() {
   const styleElement = document.createElement('style');
-  // document.head.append(styleElement);
+  document.head.append(styleElement);
 
   const rulesManager = createRulesManager(styleElement);
   const selectorsManager = createSelectorsManager();
@@ -21,12 +21,14 @@ export function createAtyled() {
           content.substring(index),
         ];
 
-        const [originalDeclarationBlock, restOfOriginalDeclarationBlocks] = splitter(
-          element.__ATYLED__.declarationBlock
-        );
-        const [overwriteDeclarationBlock, restOfOverwriteDeclarationBlocks] = splitter(
-          declarationBlock
-        );
+        const [
+          originalDeclarationBlock,
+          restOfOriginalDeclarationBlocks,
+        ] = splitter(element.__ATYLED__.declarationBlock);
+        const [
+          overwriteDeclarationBlock,
+          restOfOverwriteDeclarationBlocks,
+        ] = splitter(declarationBlock);
 
         return createComponent(
           styleManager,

@@ -3,10 +3,9 @@ import { renderToString } from 'react-dom/server';
 import { createAtyled } from '../src/atyled';
 
 describe('main', () => {
-
   test('should render a div without any classes', () => {
     const atyled = createAtyled();
-    const Component = atyled.div``
+    const Component = atyled.div``;
 
     const result = renderToString(<Component />);
 
@@ -15,7 +14,7 @@ describe('main', () => {
 
   test('should render a div with a passed class name', () => {
     const atyled = createAtyled();
-    const Component = atyled.div``
+    const Component = atyled.div``;
 
     const result = renderToString(<Component className="a" />);
 
@@ -26,7 +25,7 @@ describe('main', () => {
     const atyled = createAtyled();
     const Component = atyled.div`
     a: b;    
-    `
+    `;
 
     const result = renderToString(<Component className="a" />);
 
@@ -50,7 +49,7 @@ describe('main', () => {
     const atyled = createAtyled();
     const Component = atyled.div``;
 
-    const Component2 = atyled(Component)``
+    const Component2 = atyled(Component)``;
 
     renderToString(<Component2 />);
 
@@ -86,7 +85,11 @@ describe('main', () => {
     }
     `;
 
-    const result = renderToString(<Component className="a"><div></div></Component>);
+    const result = renderToString(
+      <Component className="a">
+        <div></div>
+      </Component>
+    );
 
     expect(result).toBe('<div class="p0v0 p1v0 p2v0 p3v0 a"><div></div></div>');
   });
@@ -99,11 +102,11 @@ describe('main', () => {
 
     const Component2 = atyled(Component)`
       b: c;
-    `
+    `;
 
     const result = renderToString(<Component2 />);
 
-    expect(result).toBe('<div class="p0v0 p1v1"></div>')
+    expect(result).toBe('<div class="p0v0 p1v1"></div>');
     expect(Component2.displayName).toBe('atyled(atyled(div))');
   });
 
@@ -123,11 +126,11 @@ describe('main', () => {
       &:hover {
         a: d;
       }
-    `
+    `;
 
     const result = renderToString(<Component2 />);
 
-    expect(result).toBe('<div class="p0v0 p1v1 p2v2"></div>')
+    expect(result).toBe('<div class="p0v0 p1v1 p2v2"></div>');
     expect(Component2.displayName).toBe('atyled(atyled(div))');
   });
 });

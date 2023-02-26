@@ -1,4 +1,4 @@
-import type { RulesManager, SelectorsManager, StyleManager } from './type';
+import { RulesManager, SelectorsManager, StyleManager } from './type';
 
 export function createStyleManager(
   selectorsManager: SelectorsManager,

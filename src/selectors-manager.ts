@@ -1,4 +1,4 @@
-import type { SelectorsManager } from './type';
+import { SelectorsManager } from './type';
 
 export function createSelectorsManager(): SelectorsManager {
   const properties = new Map<string, string>();

@@ -1,11 +1,9 @@
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { createComponent } from '../src/component';
-import {
-  createSelectorsManager,
-} from '../src/selectors-manager';
+import { createSelectorsManager } from '../src/selectors-manager';
 import { createRulesManager } from '../src/rules-manager';
-import { createStyleManager } from '../src/style-manager'
+import { createStyleManager } from '../src/style-manager';
 
 describe('component', () => {
   const styleElement = document.createElement('style');
@@ -34,9 +32,14 @@ describe('component', () => {
   });
 
   test('should render a div with a passed class name and 1 additional class', () => {
-    const Component = createComponent(styleManager, 'div', 'atyled(div)', `
+    const Component = createComponent(
+      styleManager,
+      'div',
+      'atyled(div)',
+      `
     a: b;    
-    `);
+    `
+    );
 
     const result = renderToString(<Component className="a" />);
 
@@ -45,11 +48,16 @@ describe('component', () => {
   });
 
   test('should render a div with a passed class name and 3 additional class', () => {
-    const Component = createComponent(styleManager, 'div', 'atyled(div)', `
+    const Component = createComponent(
+      styleManager,
+      'div',
+      'atyled(div)',
+      `
     a: b;
     b: b;
     c: d    
-    `);
+    `
+    );
 
     const result = renderToString(<Component className="a" />);
 
@@ -60,7 +68,9 @@ describe('component', () => {
   test('should clean up selectors', () => {
     const Component = createComponent(styleManager, 'div', 'atyled(div)', ``);
 
-    const result = renderToString(<Component className="p0v0 p1v0 p0v1 p1v1 a" />);
+    const result = renderToString(
+      <Component className="p0v0 p1v0 p0v1 p1v1 a" />
+    );
 
     expect(result).toBe('<div class="p0v1 p1v1 a"></div>');
     expect(Component.displayName).toBe('atyled(div)');

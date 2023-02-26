@@ -1,5 +1,5 @@
 import * as React from 'react';
-import type { ReactNode, StyleManager, AtyledReactNode } from './type';
+import { ReactNode, StyleManager, AtyledReactNode } from './type';
 
 export function createComponent(
   styleManager: StyleManager,
