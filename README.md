@@ -1,8 +1,8 @@
 ![atyled](https://user-images.githubusercontent.com/1549069/221021089-c41b03e0-ef6f-4835-bc10-669d44d19bb3.png)
 
-## atomic + styled-component
+## atomic css + styled-component
 
-### This library inspired by styled-components, but:
+### This library inspired by atomic css and styled-components, plus:
 
 - It generate atomic classes
 - Final stylesheet is very optimized and small
@@ -69,6 +69,7 @@ function App() {
 ```
 
 ## Result
+
 HTML Output:
 
 ```html
@@ -87,22 +88,57 @@ HTML Output:
 ```
 
 CSS Output:
+
 ```css
-.p0v0 { text-align: center; }
-.p1v1 { --background: transparent; }
-.p2v2 { --color: #FF0000; }
-.p3v3 { background: var(--background); }
-.p4v4 { color: var(--color); }
-.p5v5 { border-radius: 3px; }
-.p6v6 { border: 2px solid rgb(255, 0, 0); }
-.p7v7 { margin: 0.5em 1em; }
-.p8v8 { padding: 0.25em 1em; }
-.p9v9:hover { color: orange; }
-.p10v10:hover { background: gray; }
-.p11v11:hover { border: 2px solid orange; }
-.p12v12::before { content: " ★ "; }
-.p13v13::before { font-size: 15px; }
-.p2v14 { --color: white; }
-.p9v15:hover { color: greenyellow; }
-.p12v16::before { content: " ☀︎ "; }
+.p0v0 {
+  text-align: center;
+}
+.p1v1 {
+  --background: transparent;
+}
+.p2v2 {
+  --color: #ff0000;
+}
+.p3v3 {
+  background: var(--background);
+}
+.p4v4 {
+  color: var(--color);
+}
+.p5v5 {
+  border-radius: 3px;
+}
+.p6v6 {
+  border: 2px solid rgb(255, 0, 0);
+}
+.p7v7 {
+  margin: 0.5em 1em;
+}
+.p8v8 {
+  padding: 0.25em 1em;
+}
+.p9v9:hover {
+  color: orange;
+}
+.p10v10:hover {
+  background: gray;
+}
+.p11v11:hover {
+  border: 2px solid orange;
+}
+.p12v12::before {
+  content: ' ★ ';
+}
+.p13v13::before {
+  font-size: 15px;
+}
+.p2v14 {
+  --color: white;
+}
+.p9v15:hover {
+  color: greenyellow;
+}
+.p12v16::before {
+  content: ' ☀︎ ';
+}
 ```
