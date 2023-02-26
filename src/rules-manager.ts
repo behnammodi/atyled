@@ -1,4 +1,4 @@
-import { RulesManager } from './type';
+import type { RulesManager } from './type';
 
 export function createRulesManager(
   styleElement: HTMLStyleElement
