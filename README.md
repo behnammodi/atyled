@@ -7,7 +7,7 @@
 - It generate atomic classes
 - Final stylesheet is very optimized and small
 - It's tiny and less than 2KB
-- SSR support
+- SSR support (🚧 in-progress)
 - Faster than `styled-components`
 - No overwrite rules
 - No dependencies (if it is a benefit :))
