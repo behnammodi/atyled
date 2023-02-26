@@ -70,7 +70,7 @@ function App() {
 
 ## Result
 
-HTML Output:
+HTML:
 
 ```html
 <div class="p0v0">
@@ -87,7 +87,7 @@ HTML Output:
 </div>
 ```
 
-CSS Output:
+StyleSheet:
 
 ```css
 .p0v0 { text-align: center; }
