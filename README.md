@@ -1,6 +1,6 @@
 ![atyled](https://user-images.githubusercontent.com/1549069/221021089-c41b03e0-ef6f-4835-bc10-669d44d19bb3.png)
 
-## atomic css + styled-component
+## inspired by atomic css + styled-components
 
 ### This library inspired by atomic css and styled-components, plus:
 
