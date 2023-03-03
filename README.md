@@ -92,7 +92,7 @@ StyleSheet:
 ```css
 .p0v0 { text-align: center; }
 .p1v1 { --background: transparent; }
-.p2v2 { --color: #ff0000; }
+.p2v2 { --color: #FF0000; }
 .p3v3 { background: var(--background); }
 .p4v4 { color: var(--color); }
 .p5v5 { border-radius: 3px; }
@@ -102,9 +102,10 @@ StyleSheet:
 .p9v9:hover { color: orange; }
 .p10v10:hover { background: gray; }
 .p11v11:hover { border: 2px solid orange; }
-.p12v12::before { content: ' ★ '; }
+.p12v12::before { content: \" ★ \"; }
 .p13v13::before { font-size: 15px; }
+.p1v2 { --background: #FF0000; }
 .p2v14 { --color: white; }
 .p9v15:hover { color: greenyellow; }
-.p12v16::before { content: ' ☀︎ '; }
+.p12v16::before { content: \" ☀︎ \"; }
 ```
