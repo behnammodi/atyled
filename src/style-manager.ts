@@ -1,4 +1,5 @@
 import { RulesManager, SelectorsManager, StyleManager } from './type';
+import { createSingleDeclarationFromDeclarationBlock } from './utils';
 
 export function createStyleManager(
   selectorsManager: SelectorsManager,
@@ -25,40 +26,137 @@ export function createStyleManager(
     return selector;
   }
 
-  function createDeclarationFromDeclarationBlock(plain: string): string[] {
-    return plain
-      .trim()
-      .split(';')
-      .filter(item => !!item);
-  }
-
   function add(declarationBlock: string): string {
     if (declarationBlockCache.has(declarationBlock)) {
       return declarationBlockCache.get(declarationBlock) as string;
     }
 
+    /**
+     * here we are going to split declaration block to 2 parts
+     * const X = styled.div`
+     *  a: b;
+     *  c: d;
+     *
+     *  &:hover {
+     *    a: c;
+     *  }
+     *
+     *  &::before {
+     *    b: c
+     *  }
+     *
+     *  & > div {
+     *    c: d
+     *  }
+     * `
+     *
+     * to:
+     *
+     * mainDeclarationBlock: `
+     *  a: b;
+     *  c: d;
+     * `
+     *
+     * moreDeclarationBlocks: [
+     * `:hover {
+     *    a: c;
+     *  }`,
+     * `::before {
+     *    b: c
+     *  }`,
+     *  ` > div {
+     *    c: d
+     *  }`,
+     * ]
+     */
     const [
       mainDeclarationBlock,
       ...moreDeclarationBlocks
     ] = declarationBlock.split(combinator);
 
-    const mainDeclarations = createDeclarationFromDeclarationBlock(
+    /**
+     * convert declaration block to single declarations:
+     *  a: b;
+     *  c: d;
+     *
+     * to:
+     *
+     * mainDeclarations: ["a:b", "c:d"]
+     */
+    const mainDeclarations = createSingleDeclarationFromDeclarationBlock(
       mainDeclarationBlock
     );
+
+    /**
+     * create class names and rules based on declarations:
+     * ["a:b", "c:d"]
+     *
+     * to
+     *
+     * p0v0 p1v1
+     */
     const mainSelectors = mainDeclarations.map(item =>
       createSelectorAndRule(item)
     );
 
     const moreSelectors = moreDeclarationBlocks.map(moreDeclarationBlock => {
+      /**
+       * split to selector sign and declaration block by
+       * declarationStart: `{`
+       *
+       * `:hover {
+       *    a: c;
+       *  }`
+       *
+       * to:
+       *
+       * selector: `:hover`
+       * declarationBlock: `
+       *   a: c;
+       * }`
+       */
       let [selector, declarationBlock] = moreDeclarationBlock.split(
         declarationStart
       );
+
+      /**
+       * clean up selector left right spaces
+       */
       selector = selector.trim();
-      const moreDeclarations = createDeclarationFromDeclarationBlock(
-        declarationBlock.replace(declarationEnd, '')
+
+      /**
+       * remove declarationEnd from declarationBlock
+       * declarationEnd: `}`
+       *
+       * declarationBlock: `
+       *   a: c;
+       * }`
+       *
+       * to:
+       *
+       * declarationBlock: `
+       *   a: c;
+       * `
+       */
+      declarationBlock = declarationBlock.replace(declarationEnd, '');
+
+      /**
+       * create declarations from declarationBlock;
+       *
+       * declarationBlock: `
+       *   a: c;
+       * `
+       *
+       * moreDeclarations: [
+       *   "a:c"
+       * ]
+       */
+      const moreDeclarations = createSingleDeclarationFromDeclarationBlock(
+        declarationBlock
       );
+
       return moreDeclarations
-        .map(item => createSelectorAndRule(item, selector))
+        .map(declaration => createSelectorAndRule(declaration, selector))
         .join(' ');
     });
 

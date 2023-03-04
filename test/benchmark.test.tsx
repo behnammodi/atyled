@@ -23,7 +23,7 @@ describe('benchmark', () => {
     color: red;
     background-color: blue;
     border: 1px solid green;
-    font-size: 12px
+    font-size: 12px;
     width: var(--e);
     height: 12px;
     z-index: 1;
@@ -33,7 +33,7 @@ describe('benchmark', () => {
     color: red;
     background-color: blue;
     border: 1px solid green;
-    font-size: 12px
+    font-size: 12px;
     width: var(--e);
     height: 12px;
     z-index: 1;
