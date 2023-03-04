@@ -1,5 +1,8 @@
 import { RulesManager, SelectorsManager, StyleManager } from './type';
-import { createSingleDeclarationFromDeclarationBlock } from './utils';
+import {
+  createSingleDeclarationFromDeclarationBlock,
+  extractor,
+} from './utils';
 
 export function createStyleManager(
   selectorsManager: SelectorsManager,
@@ -9,7 +12,6 @@ export function createStyleManager(
   const declarationBlockCache = new Map<string, string>();
   const declarationStart = '{';
   const declarationEnd = '}';
-  const combinator = '&';
 
   function createSelectorAndRule(
     line: string,
@@ -58,21 +60,28 @@ export function createStyleManager(
      * `
      *
      * moreDeclarationBlocks: [
-     * `:hover {
+     * `&:hover {
      *    a: c;
      *  }`,
-     * `::before {
+     * `&::before {
      *    b: c
      *  }`,
-     *  ` > div {
+     *  `& > div {
      *    c: d
      *  }`,
      * ]
      */
-    const [
-      mainDeclarationBlock,
-      ...moreDeclarationBlocks
-    ] = declarationBlock.split(combinator);
+
+    // const [
+    //   mainDeclarationBlock,
+    //   ...moreDeclarationBlocks
+    // ] = declarationBlock.split(combinator);
+
+    const [mainDeclarationBlock, moreDeclarationBlocks] = extractor(
+      declarationBlock,
+      '&',
+      '}'
+    );
 
     /**
      * convert declaration block to single declarations:
@@ -115,14 +124,14 @@ export function createStyleManager(
        *   a: c;
        * }`
        */
-      let [selector, declarationBlock] = moreDeclarationBlock.split(
+      let [selector, declarationBlock] = moreDeclarationBlock.value.split(
         declarationStart
       );
 
       /**
-       * clean up selector left right spaces
+       * clean up selector left right spaces and & sign
        */
-      selector = selector.trim();
+      selector = selector.substring(1).trim();
 
       /**
        * remove declarationEnd from declarationBlock
