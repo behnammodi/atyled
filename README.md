@@ -39,6 +39,12 @@ const Button = atyled.button`
     content: ' ★ ';
     font-size: 15px;
   }
+
+  /* media */
+  @media (max-width: 500px) {
+    width: 5px;    
+    overflow: hidden
+  }
 `;
 
 const PrimaryButton = atyled(Button)`
@@ -51,6 +57,11 @@ const PrimaryButton = atyled(Button)`
 
   &::before {
     content: ' ☀︎ ';
+  }
+
+  /* overwrite media */
+  @media (max-width: 500px) {
+    width: auto;
   }
 `;
 
@@ -75,12 +86,12 @@ HTML:
 ```html
 <div class="p0v0">
   <button
-    class="p1v1 p2v2 p3v3 p4v4 p5v5 p6v6 p7v7 p8v8 p9v9 p10v10 p11v11 p12v12 p13v13"
+    class="p1v1 p2v2 p3v3 p4v4 p5v5 p6v6 p7v7 p8v8 p9v9 p10v10 p11v11 p12v12 p13v13 p14v14 p15v15"
   >
     Normal Button
   </button>
   <button
-    class="p3v3 p4v4 p5v5 p6v6 p7v7 p8v8 p1v2 p2v14 p10v10 p11v11 p13v13 p9v15 p12v16"
+    class="p3v3 p4v4 p5v5 p6v6 p7v7 p8v8 p1v2 p2v16 p10v10 p11v11 p13v13 p9v17 p12v18 p15v15 p14v19"
   >
     Primary Button
   </button>
@@ -102,10 +113,11 @@ StyleSheet:
 .p9v9:hover { color: orange; }
 .p10v10:hover { background: gray; }
 .p11v11:hover { border: 2px solid orange; }
-.p12v12::before { content: \" ★ \"; }
+.p12v12::before { content: " ★ "; }
 .p13v13::before { font-size: 15px; }
+@media (max-width: 500px) {.p14v14 { width: 5px; }.p15v15 { overflow: hidden; }.p14v19 { width: auto; }}
 .p1v2 { --background: #FF0000; }
-.p2v14 { --color: white; }
-.p9v15:hover { color: greenyellow; }
-.p12v16::before { content: \" ☀︎ \"; }
+.p2v16 { --color: white; }
+.p9v17:hover { color: greenyellow; }
+.p12v18::before { content: " ☀︎ "; }
 ```
