@@ -1,9 +1,5 @@
+import { compile, Element } from 'stylis';
 import { RulesManager, SelectorsManager, StyleManager } from './type';
-import {
-  createSingleDeclarationFromDeclarationBlock,
-  extractPseudoAndAtRules,
-  removeCommentsFromDeclarationBlock,
-} from './style-manager-utils';
 
 export function createStyleManager(
   selectorsManager: SelectorsManager,
@@ -11,237 +7,107 @@ export function createStyleManager(
 ): StyleManager {
   const selectorsCache = new Map<string, string>();
   const declarationBlockCache = new Map<string, string>();
-  const declarationStart = '{';
-  const declarationEnd = '}';
 
-  function extractPropertyAndValue(declaration: string) {
-    let [property, value] = declaration.split(':');
-    property = property.trim();
-    value = value.trim();
+  function extractElements(elements: Element[]) {
+    const decl = [];
+    const rule = [];
+    const at = [];
 
-    return [property, value];
+    for (let i = 0; i < elements.length; i++) {
+      const element = elements[i];
+      const type = element.type;
+
+      if (type === 'decl') {
+        decl.push(element);
+      } else if (type === 'rule') {
+        rule.push(element);
+      } else if (type === '@media') {
+        at.push(element);
+      }
+    }
+
+    return [decl, rule, at];
   }
 
-  function createSelectorAndRuleForMainDeclarationAndPseudo(
-    declaration: string,
-    additionalSelectorOrPseudo: string = ''
-  ): string {
-    let [property, value] = extractPropertyAndValue(declaration);
-
-    const selector = selectorsManager.add(
-      property,
-      value,
-      additionalSelectorOrPseudo
-    );
-
-    rulesManager.add(
-      `${selector}${additionalSelectorOrPseudo}`,
-      property,
-      value
-    );
-
-    return selector;
-  }
-
-  function createSelectorAndRuleForAtDeclaration(
-    declaration: string,
-    at: string = ''
-  ): string {
-    let [property, value] = extractPropertyAndValue(declaration);
-
-    const selector = selectorsManager.add(`${property}${at}`, value);
-
-    rulesManager.add(selector, property, value, at);
-
-    return selector;
-  }
-
-  function createMainDeclarationSelector(
-    mainDeclarationBlock: string
-  ): string[] {
-    /**
-     * convert declaration block to single declarations:
-     *  a: b;
-     *  c: d;
-     *
-     * to:
-     *
-     * mainDeclarations: ["a:b", "c:d"]
-     */
-    const mainDeclarations = createSingleDeclarationFromDeclarationBlock(
-      mainDeclarationBlock
-    );
-
-    /**
-     * create class names and rules based on declarations:
-     * ["a:b", "c:d"]
-     *
-     * to
-     *
-     * p0v0 p1v1
-     */
-    const mainSelectors = mainDeclarations.map(item =>
-      createSelectorAndRuleForMainDeclarationAndPseudo(item)
-    );
-
-    return mainSelectors;
-  }
-
-  function createPseudoDeclarationSelector(
-    pseudoDeclarationBlocks: string[]
-  ): string[] {
-    return pseudoDeclarationBlocks.map(pseudoDeclarationBlock => {
-      /**
-       * split to selector sign and declaration block by
-       * declarationStart: `{`
-       *
-       * `:hover {
-       *    a: c;
-       *  }`
-       *
-       * to:
-       *
-       * selector: `:hover`
-       * declarationBlock: `
-       *   a: c;
-       * }`
-       */
-      let [selector, declarationBlock] = pseudoDeclarationBlock.split(
-        declarationStart
-      );
-
-      /**
-       * clean up selector left right spaces and & sign
-       */
-      selector = selector.substring(1).trim();
-
-      /**
-       * remove declarationEnd from declarationBlock
-       * declarationEnd: `}`
-       *
-       * declarationBlock: `
-       *   a: c;
-       * }`
-       *
-       * to:
-       *
-       * declarationBlock: `
-       *   a: c;
-       * `
-       */
-      declarationBlock = declarationBlock.replace(declarationEnd, '');
-
-      /**
-       * create declarations from declarationBlock;
-       *
-       * declarationBlock: `
-       *   a: c;
-       * `
-       *
-       * pseudoDeclarations: [
-       *   "a:c"
-       * ]
-       */
-      const pseudoDeclarations = createSingleDeclarationFromDeclarationBlock(
-        declarationBlock
-      );
-
-      return pseudoDeclarations
-        .map(declaration =>
-          createSelectorAndRuleForMainDeclarationAndPseudo(
-            declaration,
-            selector
-          )
-        )
-        .join(' ');
+  function createMainSelectors(mainDeclarations: Element[]) {
+    return mainDeclarations.map(mainDeclaration => {
+      const property = mainDeclaration.props as string;
+      const value = mainDeclaration.children as string;
+      const selector = selectorsManager.add(property, value);
+      rulesManager.add(selector, property, value);
+      return selector;
     });
   }
 
-  function createAtDeclarationSelector(
-    atDeclarationBlocks: string[]
-  ): string[] {
-    return atDeclarationBlocks.map(atDeclarationBlock => {
-      let [at, declarationBlock] = atDeclarationBlock.split(declarationStart);
-
-      at = at.trim();
-
-      declarationBlock = declarationBlock.replace(declarationEnd, '');
-
-      const declarations = createSingleDeclarationFromDeclarationBlock(
-        declarationBlock
+  function createRuleSelectors(ruleDeclarations: Element[]) {
+    return ruleDeclarations.map(pseudoDeclarationBlock => {
+      const additionalSelectorOrPseudo = pseudoDeclarationBlock.value.replace(
+        '&\f',
+        ''
       );
+      const selectors: string[] = [];
+      for (let i = 0; i < pseudoDeclarationBlock.children.length; i++) {
+        const declaration = pseudoDeclarationBlock.children[i] as Element;
+        if (declaration.type !== 'decl') continue;
+        const property = declaration.props as string;
+        const value = declaration.children as string;
+        const selector = selectorsManager.add(
+          property,
+          value,
+          additionalSelectorOrPseudo
+        );
 
-      return declarations
-        .map(declaration =>
-          createSelectorAndRuleForAtDeclaration(declaration, at)
-        )
-        .join(' ');
+        rulesManager.add(
+          `${selector}${additionalSelectorOrPseudo}`,
+          property,
+          value
+        );
+
+        selectors.push(selector);
+      }
+      return selectors.join(' ');
+    });
+  }
+
+  function createAtSelectors(atDeclarations: Element[]) {
+    return atDeclarations.map(atDeclarationBlock => {
+      const at = atDeclarationBlock.value;
+      const selectors: string[] = [];
+      for (let i = 0; i < atDeclarationBlock.children.length; i++) {
+        const declaration = atDeclarationBlock.children[i] as Element;
+        if (declaration.type !== 'decl') continue;
+        const property = declaration.props as string;
+        const value = declaration.children as string;
+        const selector = selectorsManager.add(`${property}${at}`, value);
+        rulesManager.add(selector, property, value, at);
+        selectors.push(selector);
+      }
+      return selectors.join(' ');
     });
   }
 
   function add(declarationBlock: string): string {
-    const declarationBlockWithoutComments = removeCommentsFromDeclarationBlock(
-      declarationBlock
-    );
-
-    if (declarationBlockCache.has(declarationBlockWithoutComments)) {
-      return declarationBlockCache.get(
-        declarationBlockWithoutComments
-      ) as string;
+    if (declarationBlockCache.has(declarationBlock)) {
+      return declarationBlockCache.get(declarationBlock) as string;
     }
 
-    /**
-     * here we are going to split declaration block to 2 parts
-     * const X = styled.div`
-     *  a: b;
-     *  c: d;
-     *
-     *  &:hover {
-     *    a: c;
-     *  }
-     *
-     *  &::before {
-     *    b: c
-     *  }
-     *
-     *  & > div {
-     *    c: d
-     *  }
-     * `
-     *
-     * to:
-     *
-     * mainDeclarationBlock: `
-     *  a: b;
-     *  c: d;
-     * `
-     *
-     * pseudoDeclarationBlocks: [
-     * `&:hover {
-     *    a: c;
-     *  }`,
-     * `&::before {
-     *    b: c
-     *  }`,
-     *  `& > div {
-     *    c: d
-     *  }`,
-     * ]
-     */
+    const compiled = compile(declarationBlock);
 
     const [
-      mainDeclarationBlock,
-      pseudoDeclarationBlocks,
-      atDeclarationBlocks,
-    ] = extractPseudoAndAtRules(declarationBlockWithoutComments);
+      mainDeclarations,
+      ruleDeclarations,
+      atDeclarations,
+    ] = extractElements(compiled);
 
-    const selectors = [
-      ...createMainDeclarationSelector(mainDeclarationBlock),
-      ...createPseudoDeclarationSelector(pseudoDeclarationBlocks),
-      ...createAtDeclarationSelector(atDeclarationBlocks),
-    ].join(' ');
+    const mainSelectors = createMainSelectors(mainDeclarations);
+    const ruleSelectors = createRuleSelectors(ruleDeclarations);
+    const atSelectors = createAtSelectors(atDeclarations);
 
-    declarationBlockCache.set(declarationBlockWithoutComments, selectors);
+    const selectors = [...mainSelectors, ...ruleSelectors, ...atSelectors].join(
+      ' '
+    );
+
+    declarationBlockCache.set(declarationBlock, selectors);
 
     return selectors;
   }

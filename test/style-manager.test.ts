@@ -243,7 +243,7 @@ describe('createStyleManager', () => {
       '.p2v1::before'
     );
     expect((styleElement.sheet?.cssRules[3] as any).selectorText).toBe(
-      '.p3v1> div'
+      '.p3v1>div'
     );
     expect((styleElement.sheet?.cssRules[4] as any).selectorText).toBe('.p4v2');
     expect(styleElement.sheet?.cssRules).toHaveLength(5);

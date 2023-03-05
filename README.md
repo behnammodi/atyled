@@ -10,7 +10,6 @@
 - SSR support (🚧 in-progress)
 - Faster than `styled-components`
 - No overwrite rules
-- No dependencies (if it is a benefit :))
 
 ## Example
 
@@ -101,23 +100,69 @@ HTML:
 StyleSheet:
 
 ```css
-.p0v0 { text-align: center; }
-.p1v1 { --background: transparent; }
-.p2v2 { --color: #FF0000; }
-.p3v3 { background: var(--background); }
-.p4v4 { color: var(--color); }
-.p5v5 { border-radius: 3px; }
-.p6v6 { border: 2px solid rgb(255, 0, 0); }
-.p7v7 { margin: 0.5em 1em; }
-.p8v8 { padding: 0.25em 1em; }
-.p9v9:hover { color: orange; }
-.p10v10:hover { background: gray; }
-.p11v11:hover { border: 2px solid orange; }
-.p12v12::before { content: " ★ "; }
-.p13v13::before { font-size: 15px; }
-@media (max-width: 500px) {.p14v14 { width: 5px; }.p15v15 { overflow: hidden; }.p14v19 { width: auto; }}
-.p1v2 { --background: #FF0000; }
-.p2v16 { --color: white; }
-.p9v17:hover { color: greenyellow; }
-.p12v18::before { content: " ☀︎ "; }
+.p0v0 {
+  text-align: center;
+}
+.p1v1 {
+  --background: transparent;
+}
+.p2v2 {
+  --color: #ff0000;
+}
+.p3v3 {
+  background: var(--background);
+}
+.p4v4 {
+  color: var(--color);
+}
+.p5v5 {
+  border-radius: 3px;
+}
+.p6v6 {
+  border: 2px solid rgb(255, 0, 0);
+}
+.p7v7 {
+  margin: 0.5em 1em;
+}
+.p8v8 {
+  padding: 0.25em 1em;
+}
+.p9v9:hover {
+  color: orange;
+}
+.p10v10:hover {
+  background: gray;
+}
+.p11v11:hover {
+  border: 2px solid orange;
+}
+.p12v12::before {
+  content: ' ★ ';
+}
+.p13v13::before {
+  font-size: 15px;
+}
+@media (max-width: 500px) {
+  .p14v14 {
+    width: 5px;
+  }
+  .p15v15 {
+    overflow: hidden;
+  }
+  .p14v19 {
+    width: auto;
+  }
+}
+.p1v2 {
+  --background: #ff0000;
+}
+.p2v16 {
+  --color: white;
+}
+.p9v17:hover {
+  color: greenyellow;
+}
+.p12v18::before {
+  content: ' ☀︎ ';
+}
 ```

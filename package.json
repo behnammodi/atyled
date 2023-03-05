@@ -25,7 +25,9 @@
     "postpublish": "git push && git push --tags"
   },
   "peerDependencies": {
-    "react": ">=16"
+    "react": ">=16",
+    "stylis": ">=4",
+    "@types/stylis": ">=4"
   },
   "husky": {
     "hooks": {
@@ -87,5 +89,8 @@
     "styled-components",
     "react"
   ],
-  "dependencies": {}
+  "dependencies": {
+    "@types/stylis": "^4.0.2",
+    "stylis": "^4.1.3"
+  }
 }
