@@ -12,31 +12,6 @@ function numberOfSomething(value: string, something: string) {
   }, 0);
 }
 
-function createSingleDeclarationFromDeclarationBlock(
-  declarationBlock: string
-): string[] {
-  if (process.env.NODE_ENV !== 'production') {
-    const numberOfColon = numberOfSomething(declarationBlock, ':');
-    const numberOfSemicolon = numberOfSomething(declarationBlock, ';');
-    const mightBeEqual = numberOfColon === numberOfSemicolon;
-    const mightBeColonOneMore = numberOfColon === numberOfSemicolon + 1;
-
-    if (mightBeEqual === false && mightBeColonOneMore === false) {
-      throw new Error(`Please check declaration block ; missed
-
-        ${declarationBlock}
-        
-      `);
-    }
-  }
-
-  return declarationBlock
-    .trim()
-    .split(';')
-    .filter(declaration => !!declaration)
-    .map(declaration => declaration.trim());
-}
-
 function removePartOfString(
   value: string,
   startWith: number,
@@ -92,27 +67,27 @@ function extractor(
   value: string,
   startWith: string,
   endWith: string
-): [
-  string,
-  {
-    value: string;
+): [string, string[]] {
+  const items = finder(value, startWith, endWith);
+
+  const positions: {
     startIndex: number;
     endIndex: number;
-  }[]
-] {
-  const items = finder(value, startWith, endWith);
-  const positions = items.map(({ startIndex, endIndex }) => ({
-    startIndex,
-    endIndex: endIndex + 1,
-  }));
-  const rest = removePartsOfString(value, positions).trim();
+  }[] = [];
+  const values: string[] = [];
 
-  return [rest, items];
+  items.forEach(({ value, startIndex, endIndex }) => {
+    values.push(value);
+    positions.push({ startIndex, endIndex: endIndex + 1 });
+  });
+
+  const remains = removePartsOfString(value, positions).trim();
+
+  return [remains, values];
 }
 
 export {
   numberOfSomething,
-  createSingleDeclarationFromDeclarationBlock,
   removePartOfString,
   removePartsOfString,
   finder,

@@ -32,10 +32,10 @@ export function createSelectorsManager(): SelectorsManager {
   function add(
     property: string,
     value: string,
-    additionalSelectorOrPseudo: string = ''
+    propertyAdditionalHint: string = ''
   ): string {
     const propertyKey = addPropertyIfNotExist(
-      `${property}${additionalSelectorOrPseudo}`
+      `${property}${propertyAdditionalHint}`
     );
     const valueKey = addValueIfNotExist(value);
 

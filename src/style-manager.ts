@@ -1,8 +1,8 @@
 import { RulesManager, SelectorsManager, StyleManager } from './type';
 import {
   createSingleDeclarationFromDeclarationBlock,
-  extractor,
-} from './utils';
+  extractPseudoAndAtRules,
+} from './style-manager-utils';
 
 export function createStyleManager(
   selectorsManager: SelectorsManager,
@@ -13,19 +13,171 @@ export function createStyleManager(
   const declarationStart = '{';
   const declarationEnd = '}';
 
-  function createSelectorAndRule(
-    line: string,
-    additionalSelector: string = ''
-  ): string {
-    let [property, value] = line.split(':');
+  function extractPropertyAndValue(declaration: string) {
+    let [property, value] = declaration.split(':');
     property = property.trim();
     value = value.trim();
 
-    const selector = selectorsManager.add(property, value, additionalSelector);
+    return [property, value];
+  }
 
-    rulesManager.add(`${selector}${additionalSelector}`, property, value);
+  function createSelectorAndRuleForMainDeclarationAndPseudo(
+    declaration: string,
+    additionalSelectorOrPseudo: string = ''
+  ): string {
+    let [property, value] = extractPropertyAndValue(declaration);
+
+    const selector = selectorsManager.add(
+      property,
+      value,
+      additionalSelectorOrPseudo
+    );
+
+    rulesManager.add(
+      `${selector}${additionalSelectorOrPseudo}`,
+      property,
+      value
+    );
 
     return selector;
+  }
+
+  function createSelectorAndRuleForAtDeclaration(
+    declaration: string,
+    at: string = ''
+  ): string {
+    let [property, value] = extractPropertyAndValue(declaration);
+
+    const selector = selectorsManager.add(`${property}${at}`, value);
+
+    rulesManager.add(selector, property, value, at);
+
+    return selector;
+  }
+
+  function createMainDeclarationSelector(
+    mainDeclarationBlock: string
+  ): string[] {
+    /**
+     * convert declaration block to single declarations:
+     *  a: b;
+     *  c: d;
+     *
+     * to:
+     *
+     * mainDeclarations: ["a:b", "c:d"]
+     */
+    const mainDeclarations = createSingleDeclarationFromDeclarationBlock(
+      mainDeclarationBlock
+    );
+
+    /**
+     * create class names and rules based on declarations:
+     * ["a:b", "c:d"]
+     *
+     * to
+     *
+     * p0v0 p1v1
+     */
+    const mainSelectors = mainDeclarations.map(item =>
+      createSelectorAndRuleForMainDeclarationAndPseudo(item)
+    );
+
+    return mainSelectors;
+  }
+
+  function createPseudoDeclarationSelector(
+    pseudoDeclarationBlocks: string[]
+  ): string[] {
+    return pseudoDeclarationBlocks.map(pseudoDeclarationBlock => {
+      /**
+       * split to selector sign and declaration block by
+       * declarationStart: `{`
+       *
+       * `:hover {
+       *    a: c;
+       *  }`
+       *
+       * to:
+       *
+       * selector: `:hover`
+       * declarationBlock: `
+       *   a: c;
+       * }`
+       */
+      let [selector, declarationBlock] = pseudoDeclarationBlock.split(
+        declarationStart
+      );
+
+      /**
+       * clean up selector left right spaces and & sign
+       */
+      selector = selector.substring(1).trim();
+
+      /**
+       * remove declarationEnd from declarationBlock
+       * declarationEnd: `}`
+       *
+       * declarationBlock: `
+       *   a: c;
+       * }`
+       *
+       * to:
+       *
+       * declarationBlock: `
+       *   a: c;
+       * `
+       */
+      declarationBlock = declarationBlock.replace(declarationEnd, '');
+
+      /**
+       * create declarations from declarationBlock;
+       *
+       * declarationBlock: `
+       *   a: c;
+       * `
+       *
+       * pseudoDeclarations: [
+       *   "a:c"
+       * ]
+       */
+      const pseudoDeclarations = createSingleDeclarationFromDeclarationBlock(
+        declarationBlock
+      );
+
+      return pseudoDeclarations
+        .map(declaration =>
+          createSelectorAndRuleForMainDeclarationAndPseudo(
+            declaration,
+            selector
+          )
+        )
+        .join(' ');
+    });
+  }
+
+  function createAtDeclarationSelector(
+    atDeclarationBlocks: string[]
+  ): string[] {
+    return atDeclarationBlocks.map(atDeclarationBlock => {
+      console.log(atDeclarationBlock);
+
+      let [at, declarationBlock] = atDeclarationBlock.split(declarationStart);
+
+      at = at.trim();
+
+      declarationBlock = declarationBlock.replace(declarationEnd, '');
+
+      const declarations = createSingleDeclarationFromDeclarationBlock(
+        declarationBlock
+      );
+
+      return declarations
+        .map(declaration =>
+          createSelectorAndRuleForAtDeclaration(declaration, at)
+        )
+        .join(' ');
+    });
   }
 
   function add(declarationBlock: string): string {
@@ -59,7 +211,7 @@ export function createStyleManager(
      *  c: d;
      * `
      *
-     * moreDeclarationBlocks: [
+     * pseudoDeclarationBlocks: [
      * `&:hover {
      *    a: c;
      *  }`,
@@ -72,104 +224,19 @@ export function createStyleManager(
      * ]
      */
 
-    // const [
-    //   mainDeclarationBlock,
-    //   ...moreDeclarationBlocks
-    // ] = declarationBlock.split(combinator);
+    const [
+      mainDeclarationBlock,
+      pseudoDeclarationBlocks,
+      atDeclarationBlocks,
+    ] = extractPseudoAndAtRules(declarationBlock);
 
-    const [mainDeclarationBlock, moreDeclarationBlocks] = extractor(
-      declarationBlock,
-      '&',
-      '}'
-    );
+    console.log({ atDeclarationBlocks });
 
-    /**
-     * convert declaration block to single declarations:
-     *  a: b;
-     *  c: d;
-     *
-     * to:
-     *
-     * mainDeclarations: ["a:b", "c:d"]
-     */
-    const mainDeclarations = createSingleDeclarationFromDeclarationBlock(
-      mainDeclarationBlock
-    );
-
-    /**
-     * create class names and rules based on declarations:
-     * ["a:b", "c:d"]
-     *
-     * to
-     *
-     * p0v0 p1v1
-     */
-    const mainSelectors = mainDeclarations.map(item =>
-      createSelectorAndRule(item)
-    );
-
-    const moreSelectors = moreDeclarationBlocks.map(moreDeclarationBlock => {
-      /**
-       * split to selector sign and declaration block by
-       * declarationStart: `{`
-       *
-       * `:hover {
-       *    a: c;
-       *  }`
-       *
-       * to:
-       *
-       * selector: `:hover`
-       * declarationBlock: `
-       *   a: c;
-       * }`
-       */
-      let [selector, declarationBlock] = moreDeclarationBlock.value.split(
-        declarationStart
-      );
-
-      /**
-       * clean up selector left right spaces and & sign
-       */
-      selector = selector.substring(1).trim();
-
-      /**
-       * remove declarationEnd from declarationBlock
-       * declarationEnd: `}`
-       *
-       * declarationBlock: `
-       *   a: c;
-       * }`
-       *
-       * to:
-       *
-       * declarationBlock: `
-       *   a: c;
-       * `
-       */
-      declarationBlock = declarationBlock.replace(declarationEnd, '');
-
-      /**
-       * create declarations from declarationBlock;
-       *
-       * declarationBlock: `
-       *   a: c;
-       * `
-       *
-       * moreDeclarations: [
-       *   "a:c"
-       * ]
-       */
-      const moreDeclarations = createSingleDeclarationFromDeclarationBlock(
-        declarationBlock
-      );
-
-      return moreDeclarations
-        .map(declaration => createSelectorAndRule(declaration, selector))
-        .join(' ');
-    });
-
-    const selectors = [...mainSelectors, ...moreSelectors].join(' ');
+    const selectors = [
+      ...createMainDeclarationSelector(mainDeclarationBlock),
+      ...createPseudoDeclarationSelector(pseudoDeclarationBlocks),
+      ...createAtDeclarationSelector(atDeclarationBlocks),
+    ].join(' ');
 
     declarationBlockCache.set(declarationBlock, selectors);
 

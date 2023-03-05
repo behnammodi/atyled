@@ -86,5 +86,6 @@
     "atomic css",
     "styled-components",
     "react"
-  ]
+  ],
+  "dependencies": {}
 }

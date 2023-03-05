@@ -1,6 +1,5 @@
 import {
   numberOfSomething,
-  createSingleDeclarationFromDeclarationBlock,
   removePartOfString,
   removePartsOfString,
   finder,
@@ -34,47 +33,6 @@ describe('utils', () => {
           ';'
         )
       ).toBe(5);
-    });
-  });
-
-  describe('createSingleDeclarationFromDeclarationBlock', () => {
-    test('should return 1 declarations', () => {
-      expect(
-        createSingleDeclarationFromDeclarationBlock(`
-        a:b;
-      `)
-      ).toEqual(['a:b']);
-    });
-
-    test('should return 2 declarations', () => {
-      expect(
-        createSingleDeclarationFromDeclarationBlock(`
-        a:b;
-        c:d;
-      `)
-      ).toEqual(['a:b', 'c:d']);
-    });
-
-    test('should return 2 declarations without last ;', () => {
-      expect(
-        createSingleDeclarationFromDeclarationBlock(`
-        a:b;
-        c:d
-      `)
-      ).toEqual(['a:b', 'c:d']);
-    });
-
-    test('should throw an error', () => {
-      try {
-        createSingleDeclarationFromDeclarationBlock(`
-        a:b
-        c:d
-      `);
-      } catch (e) {
-        expect((e as Error).message).toContain(
-          'Please check declaration block ; missed'
-        );
-      }
     });
   });
 
@@ -234,7 +192,7 @@ c: d;
   });
 
   describe('extractor', () => {
-    test('sdsf', () => {
+    test('extract all pseudos', () => {
       expect(
         extractor(
           `
@@ -281,28 +239,81 @@ c: d;
   a: d;
 }`,
         [
-          {
-            endIndex: 31,
-            startIndex: 14,
-            value: `&:hover {
+          `&:hover {
   a: e
 }`,
-          },
-          {
-            endIndex: 90,
-            startIndex: 72,
-            value: `& > div {
+
+          `& > div {
   b: c;
 }`,
-          },
-          {
-            endIndex: 158,
-            startIndex: 131,
-            value: `&::before {
+
+          `&::before {
   a: b;
   b: c
 }`,
-          },
+        ],
+      ]);
+    });
+
+    test('extract all @media', () => {
+      expect(
+        extractor(
+          `
+a: b;
+c: d;
+
+&:hover {
+  a: e
+}
+
+@media (max-width:200px) {
+  a: c;
+}
+
+& > div {
+  b: c;
+}
+
+@media (max-width:400px) {
+  a: d;
+}
+
+&::before {
+  a: b;
+  b: c
+}
+      `,
+          '@',
+          '}'
+        )
+      ).toEqual([
+        `a: b;
+c: d;
+
+&:hover {
+  a: e
+}
+
+
+
+& > div {
+  b: c;
+}
+
+
+
+&::before {
+  a: b;
+  b: c
+}`,
+        [
+          `@media (max-width:200px) {
+  a: c;
+}`,
+
+          `@media (max-width:400px) {
+  a: d;
+}`,
         ],
       ]);
     });

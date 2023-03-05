@@ -249,6 +249,39 @@ describe('createStyleManager', () => {
     expect(styleElement.sheet?.cssRules).toHaveLength(5);
   });
 
+  test('should return 5 classes for @media', () => {
+    const { styleManager, styleElement } = createStyleManagerForEachTest();
+    const selectors = styleManager.add(`
+  @media (max-width:200px) {
+    a: b;
+  }
+
+  @media (max-width:400px) {
+    a: b;
+    a: c;
+  }
+
+  @media (max-width:200px) {
+    a: c;
+  }
+
+  @media (max-width:300px) {
+    a: b;
+  }
+      `);
+
+    expect(selectors).toBe('p0v0 p1v0 p1v1 p0v1 p2v0');
+    expect(styleElement.sheet?.cssRules[0].cssText).toBe(
+      '@media (max-width:200px) {.p0v0 {a: b;}.p0v1 {a: c;}}'
+    );
+    expect(styleElement.sheet?.cssRules[1].cssText).toBe(
+      '@media (max-width:400px) {.p1v0 {a: b;}.p1v1 {a: c;}}'
+    );
+    expect(styleElement.sheet?.cssRules[2].cssText).toBe(
+      '@media (max-width:300px) {.p2v0 {a: b;}}'
+    );
+  });
+
   test('should return p0v0', () => {
     const { styleManager } = createStyleManagerForEachTest();
     const selectors = styleManager.cleanUpSelectors('p0v0');

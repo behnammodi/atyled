@@ -12,7 +12,7 @@ export type AtyledReactNode = ReactNode & {
 };
 
 export type RulesManager = {
-  add: (selector: string, property: string, value: string) => void;
+  add: (selector: string, property: string, value: string, at?: string) => void;
   getStyleSheet: () => string;
   getStyleSheetWithTags: () => string;
 };
