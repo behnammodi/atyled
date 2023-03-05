@@ -89,7 +89,7 @@ c: d;
         )
       ).toEqual([
         {
-          endIndex: 49,
+          endIndex: 50,
           startIndex: 14,
           value: `@media (max-width:200px) {
   a: c;
@@ -117,14 +117,14 @@ c: d;
         )
       ).toEqual([
         {
-          endIndex: 49,
+          endIndex: 50,
           startIndex: 14,
           value: `@media (max-width:200px) {
   a: c;
 }`,
         },
         {
-          endIndex: 87,
+          endIndex: 88,
           startIndex: 52,
           value: `@media (max-width:400px) {
   a: d;
@@ -166,21 +166,21 @@ c: d;
         )
       ).toEqual([
         {
-          endIndex: 31,
+          endIndex: 32,
           startIndex: 14,
           value: `&:hover {
   a: e
 }`,
         },
         {
-          endIndex: 90,
+          endIndex: 91,
           startIndex: 72,
           value: `& > div {
   b: c;
 }`,
         },
         {
-          endIndex: 158,
+          endIndex: 159,
           startIndex: 131,
           value: `&::before {
   a: b;

@@ -249,24 +249,30 @@ describe('createStyleManager', () => {
     expect(styleElement.sheet?.cssRules).toHaveLength(5);
   });
 
-  test('should return 5 classes for @media', () => {
+  test('should return 5 classes for @media and remove their comments', () => {
     const { styleManager, styleElement } = createStyleManagerForEachTest();
     const selectors = styleManager.add(`
+  /* comment 1 */
   @media (max-width:200px) {
     a: b;
   }
 
   @media (max-width:400px) {
+    /* comment 2 */
     a: b;
     a: c;
   }
 
   @media (max-width:200px) {
     a: c;
+    /* comment 3 */
   }
 
   @media (max-width:300px) {
     a: b;
+    /* 
+    comment 4 
+    */
   }
       `);
 

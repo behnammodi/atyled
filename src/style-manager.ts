@@ -2,6 +2,7 @@ import { RulesManager, SelectorsManager, StyleManager } from './type';
 import {
   createSingleDeclarationFromDeclarationBlock,
   extractPseudoAndAtRules,
+  removeCommentsFromDeclarationBlock,
 } from './style-manager-utils';
 
 export function createStyleManager(
@@ -160,8 +161,6 @@ export function createStyleManager(
     atDeclarationBlocks: string[]
   ): string[] {
     return atDeclarationBlocks.map(atDeclarationBlock => {
-      console.log(atDeclarationBlock);
-
       let [at, declarationBlock] = atDeclarationBlock.split(declarationStart);
 
       at = at.trim();
@@ -181,8 +180,14 @@ export function createStyleManager(
   }
 
   function add(declarationBlock: string): string {
-    if (declarationBlockCache.has(declarationBlock)) {
-      return declarationBlockCache.get(declarationBlock) as string;
+    const declarationBlockWithoutComments = removeCommentsFromDeclarationBlock(
+      declarationBlock
+    );
+
+    if (declarationBlockCache.has(declarationBlockWithoutComments)) {
+      return declarationBlockCache.get(
+        declarationBlockWithoutComments
+      ) as string;
     }
 
     /**
@@ -228,9 +233,7 @@ export function createStyleManager(
       mainDeclarationBlock,
       pseudoDeclarationBlocks,
       atDeclarationBlocks,
-    ] = extractPseudoAndAtRules(declarationBlock);
-
-    console.log({ atDeclarationBlocks });
+    ] = extractPseudoAndAtRules(declarationBlockWithoutComments);
 
     const selectors = [
       ...createMainDeclarationSelector(mainDeclarationBlock),
@@ -238,7 +241,7 @@ export function createStyleManager(
       ...createAtDeclarationSelector(atDeclarationBlocks),
     ].join(' ');
 
-    declarationBlockCache.set(declarationBlock, selectors);
+    declarationBlockCache.set(declarationBlockWithoutComments, selectors);
 
     return selectors;
   }

@@ -14,10 +14,10 @@ function numberOfSomething(value: string, something: string) {
 
 function removePartOfString(
   value: string,
-  startWith: number,
-  endWith: number
+  startIndex: number,
+  endIndex: number
 ): string {
-  return value.substring(0, startWith) + value.substring(endWith);
+  return value.substring(0, startIndex) + value.substring(endIndex);
 }
 
 function removePartsOfString(
@@ -54,9 +54,9 @@ function finder(value: string, startWith: string, endWith: string) {
     }
     let endIndex = (i = value.indexOf(endWith, startIndex));
     items.push({
-      value: value.substring(startIndex, endIndex + 1).trim(),
+      value: value.substring(startIndex, endIndex + endWith.length).trim(),
       startIndex,
-      endIndex,
+      endIndex: endIndex + endWith.length,
     });
   }
 
@@ -78,7 +78,7 @@ function extractor(
 
   items.forEach(({ value, startIndex, endIndex }) => {
     values.push(value);
-    positions.push({ startIndex, endIndex: endIndex + 1 });
+    positions.push({ startIndex, endIndex });
   });
 
   const remains = removePartsOfString(value, positions).trim();

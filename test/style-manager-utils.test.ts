@@ -1,6 +1,7 @@
 import {
   createSingleDeclarationFromDeclarationBlock,
   extractPseudoAndAtRules,
+  removeCommentsFromDeclarationBlock,
 } from '../src/style-manager-utils';
 
 describe('style-manager-utils', () => {
@@ -99,6 +100,47 @@ c: d;`);
   a: d;
 }`,
       ]);
+    });
+  });
+
+  describe('removeCommentsFromDeclarationBlock', () => {
+    test('should cleanup all comments', () => {
+      expect(
+        removeCommentsFromDeclarationBlock(`
+/* comment 1 */
+a: b;
+c: d;
+
+/* comment 2 */
+&:hover {
+  /* comment 3 */
+  a: e
+}
+
+/* comment 4 */
+@media (max-width:200px) {
+  /* comment 5 */
+  a: c;
+  /* comment 6 */
+}
+
+/* comment 7 */
+`)
+      ).toBe(`a: b;
+c: d;
+
+
+&:hover {
+  
+  a: e
+}
+
+
+@media (max-width:200px) {
+  
+  a: c;
+  
+}`);
     });
   });
 });

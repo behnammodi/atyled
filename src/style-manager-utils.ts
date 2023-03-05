@@ -43,4 +43,12 @@ function extractPseudoAndAtRules(
   return [mainDeclarationBlock, pseudoDeclarationBlocks, atDeclarationBlocks];
 }
 
-export { createSingleDeclarationFromDeclarationBlock, extractPseudoAndAtRules };
+function removeCommentsFromDeclarationBlock(declarationBlock: string) {
+  return extractor(declarationBlock, '/*', '*/')[0];
+}
+
+export {
+  createSingleDeclarationFromDeclarationBlock,
+  extractPseudoAndAtRules,
+  removeCommentsFromDeclarationBlock,
+};
