@@ -1,3 +1,4 @@
+import { compile } from 'stylis';
 import { createSelectorsManager } from '../src/selectors-manager';
 import { createRulesManager } from '../src/rules-manager';
 import { createStyleManager } from '../src/style-manager';
@@ -17,22 +18,28 @@ describe('createStyleManager', () => {
 
   test('should create a selector', () => {
     const { styleManager } = createStyleManagerForEachTest();
-    const selectors = styleManager.add(`
+    const selectors = styleManager.add(
+      compile(`
     a: b;
-    `);
+    `)
+    );
 
     expect(selectors).toEqual('p0v0');
   });
 
   test('should create same selector', () => {
     const { styleManager } = createStyleManagerForEachTest();
-    const selectors1 = styleManager.add(`
+    const selectors1 = styleManager.add(
+      compile(`
     a: b;
-    `);
+    `)
+    );
 
-    const selectors2 = styleManager.add(`
+    const selectors2 = styleManager.add(
+      compile(`
     a: b;
-    `);
+    `)
+    );
 
     expect(selectors1).toEqual('p0v0');
     expect(selectors1).toEqual(selectors2);
@@ -40,13 +47,17 @@ describe('createStyleManager', () => {
 
   test('should create different selector for different property and value', () => {
     const { styleManager } = createStyleManagerForEachTest();
-    const selectors1 = styleManager.add(`
+    const selectors1 = styleManager.add(
+      compile(`
     a: b;
-    `);
+    `)
+    );
 
-    const selectors2 = styleManager.add(`
+    const selectors2 = styleManager.add(
+      compile(`
     c: d;
-    `);
+    `)
+    );
 
     expect(selectors2).toEqual('p1v1');
     expect(selectors1).not.toBe(selectors2);
@@ -54,20 +65,24 @@ describe('createStyleManager', () => {
 
   test('should create 2 selectors', () => {
     const { styleManager } = createStyleManagerForEachTest();
-    const selectors = styleManager.add(`
+    const selectors = styleManager.add(
+      compile(`
     a: b;
     c: d;
-    `);
+    `)
+    );
 
     expect(selectors).toEqual('p0v0 p1v1');
   });
 
   test('should create 2 selectors with same name cause of same p and v', () => {
     const { styleManager } = createStyleManagerForEachTest();
-    const selectors = styleManager.add(`
+    const selectors = styleManager.add(
+      compile(`
     a: b;
     a: b;
-    `);
+    `)
+    );
 
     expect(selectors).toEqual('p0v0 p0v0');
   });
@@ -75,15 +90,19 @@ describe('createStyleManager', () => {
   test('should create 2 selectors same to each other but order should be different', () => {
     const { styleManager } = createStyleManagerForEachTest();
 
-    const selectors1 = styleManager.add(`
+    const selectors1 = styleManager.add(
+      compile(`
     a: b;
     c: d;
-    `);
+    `)
+    );
 
-    const selectors2 = styleManager.add(`
+    const selectors2 = styleManager.add(
+      compile(`
     c: d;
     a: b;
-    `);
+    `)
+    );
 
     expect(selectors1).toEqual('p0v0 p1v1');
     expect(selectors2).toEqual('p1v1 p0v0');
@@ -91,35 +110,41 @@ describe('createStyleManager', () => {
 
   test('should create 3 selectors those completely different', () => {
     const { styleManager } = createStyleManagerForEachTest();
-    const selectors = styleManager.add(`
+    const selectors = styleManager.add(
+      compile(`
     e: f;
     g: h;
     j: i;
-    `);
+    `)
+    );
 
     expect(selectors).toEqual('p0v0 p1v1 p2v2');
   });
 
   test('should create 3 selectors with different p but same v', () => {
     const { styleManager } = createStyleManagerForEachTest();
-    const selectors = styleManager.add(`
+    const selectors = styleManager.add(
+      compile(`
     a: i;
     c: i;
     e: i;
-    `);
+    `)
+    );
 
     expect(selectors).toEqual('p0v0 p1v0 p2v0');
   });
 
   test('should create additional class for :hover', () => {
     const { styleManager, styleElement } = createStyleManagerForEachTest();
-    const selectors = styleManager.add(`
+    const selectors = styleManager.add(
+      compile(`
     a: b;
 
     &:hover {
       a: c;
     }
-    `);
+    `)
+    );
 
     expect(selectors).toEqual('p0v0 p1v1');
     expect((styleElement.sheet?.cssRules[0] as any).selectorText).toBe('.p0v0');
@@ -130,14 +155,16 @@ describe('createStyleManager', () => {
 
   test('should create 2 classes for :hover', () => {
     const { styleManager, styleElement } = createStyleManagerForEachTest();
-    const selectors = styleManager.add(`
+    const selectors = styleManager.add(
+      compile(`
     a: b;
 
     &:hover {
       a: c;
       d: e;
     }
-    `);
+    `)
+    );
 
     expect(selectors).toEqual('p0v0 p1v1 p2v2');
     expect((styleElement.sheet?.cssRules[0] as any).selectorText).toBe('.p0v0');
@@ -151,14 +178,16 @@ describe('createStyleManager', () => {
 
   test('should create 1 classes for :hover cause of duplication', () => {
     const { styleManager, styleElement } = createStyleManagerForEachTest();
-    const selectors = styleManager.add(`
+    const selectors = styleManager.add(
+      compile(`
     a: b;
 
     &:hover {
       a: c;
       a: c;
     }
-    `);
+    `)
+    );
 
     expect(selectors).toEqual('p0v0 p1v1 p1v1');
     expect((styleElement.sheet?.cssRules[0] as any).selectorText).toBe('.p0v0');
@@ -170,13 +199,15 @@ describe('createStyleManager', () => {
 
   test('should create additional class for ::before', () => {
     const { styleManager, styleElement } = createStyleManagerForEachTest();
-    const selectors = styleManager.add(`
+    const selectors = styleManager.add(
+      compile(`
     a: b;
 
     &::before {
       a: c;
     }
-    `);
+    `)
+    );
 
     expect(selectors).toEqual('p0v0 p1v1');
     expect((styleElement.sheet?.cssRules[0] as any).selectorText).toBe('.p0v0');
@@ -188,7 +219,8 @@ describe('createStyleManager', () => {
 
   test('should create 2 additional class for :hover and ::before', () => {
     const { styleManager, styleElement } = createStyleManagerForEachTest();
-    const selectors = styleManager.add(`
+    const selectors = styleManager.add(
+      compile(`
     a: b;
 
     &:hover {
@@ -198,7 +230,8 @@ describe('createStyleManager', () => {
     &::before {
       a: c;
     }
-    `);
+    `)
+    );
 
     expect(selectors).toEqual('p0v0 p1v1 p2v1');
     expect((styleElement.sheet?.cssRules[0] as any).selectorText).toBe('.p0v0');
@@ -213,7 +246,8 @@ describe('createStyleManager', () => {
 
   test('should create 3 additional class for :hover ::before > div and additional composition', () => {
     const { styleManager, styleElement } = createStyleManagerForEachTest();
-    const selectors = styleManager.add(`
+    const selectors = styleManager.add(
+      compile(`
     a: b;
 
     &:hover {
@@ -232,7 +266,8 @@ describe('createStyleManager', () => {
       a: b;
       c: d;
     }
-    `);
+    `)
+    );
 
     expect(selectors).toEqual('p0v0 p1v1 p2v1 p3v1 p0v0 p4v2');
     expect((styleElement.sheet?.cssRules[0] as any).selectorText).toBe('.p0v0');
@@ -251,7 +286,8 @@ describe('createStyleManager', () => {
 
   test('should return 5 classes for @media and remove their comments', () => {
     const { styleManager, styleElement } = createStyleManagerForEachTest();
-    const selectors = styleManager.add(`
+    const selectors = styleManager.add(
+      compile(`
   /* comment 1 */
   @media (max-width:200px) {
     a: b;
@@ -274,7 +310,8 @@ describe('createStyleManager', () => {
     comment 4 
     */
   }
-      `);
+      `)
+    );
 
     expect(selectors).toBe('p0v0 p1v0 p1v1 p0v1 p2v0');
     expect(styleElement.sheet?.cssRules[0].cssText).toBe(

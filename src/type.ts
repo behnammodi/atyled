@@ -1,4 +1,5 @@
 import { FunctionComponent, ComponentClass } from 'react';
+import { Element } from 'stylis';
 import elements from './elements';
 
 export type ReactNode = FunctionComponent<any> | ComponentClass<any, any>;
@@ -6,9 +7,9 @@ export type ReactNode = FunctionComponent<any> | ComponentClass<any, any>;
 export type AtyledReactNode = ReactNode & {
   __ATYLED__: {
     element: ReactNode;
-    declarationBlock: string;
+    declarationBlock: Element[];
   };
-  displayName?: string;
+  displayName?: Element[];
 };
 
 export type RulesManager = {
@@ -26,7 +27,7 @@ export type SelectorsManager = {
 };
 
 export type StyleManager = {
-  add: (declarationBlock: string) => string;
+  add: (declarationBlock: Element[]) => string;
   cleanUpSelectors: (selectors: string) => string;
 };
 

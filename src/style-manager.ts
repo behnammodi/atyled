@@ -1,4 +1,4 @@
-import { compile, Element } from 'stylis';
+import { Element } from 'stylis';
 import { RulesManager, SelectorsManager, StyleManager } from './type';
 
 export function createStyleManager(
@@ -6,7 +6,7 @@ export function createStyleManager(
   rulesManager: RulesManager
 ): StyleManager {
   const selectorsCache = new Map<string, string>();
-  const declarationBlockCache = new Map<string, string>();
+  const declarationBlockCache = new Map<Element[], string>();
 
   function extractElements(elements: Element[]) {
     const decl = [];
@@ -86,18 +86,16 @@ export function createStyleManager(
     });
   }
 
-  function add(declarationBlock: string): string {
+  function add(declarationBlock: Element[]): string {
     if (declarationBlockCache.has(declarationBlock)) {
       return declarationBlockCache.get(declarationBlock) as string;
     }
-
-    const compiled = compile(declarationBlock);
 
     const [
       mainDeclarations,
       ruleDeclarations,
       atDeclarations,
-    ] = extractElements(compiled);
+    ] = extractElements(declarationBlock);
 
     const mainSelectors = createMainSelectors(mainDeclarations);
     const ruleSelectors = createRuleSelectors(ruleDeclarations);

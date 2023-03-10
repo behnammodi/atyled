@@ -1,3 +1,4 @@
+import { compile } from 'stylis';
 import { createComponent } from './component';
 import { createSelectorsManager } from './selectors-manager';
 import { createRulesManager } from './rules-manager';
@@ -16,37 +17,18 @@ export function createAtyled() {
   function atyled(element: AtyledReactNode) {
     return ([declarationBlock]: TemplateStringsArray) => {
       if (element.__ATYLED__) {
-        const splitter = (content: string, index = content.indexOf('&')) => [
-          content.substring(0, index),
-          content.substring(index),
-        ];
-
-        const [
-          originalDeclarationBlock,
-          restOfOriginalDeclarationBlocks,
-        ] = splitter(element.__ATYLED__.declarationBlock);
-        const [
-          overwriteDeclarationBlock,
-          restOfOverwriteDeclarationBlocks,
-        ] = splitter(declarationBlock);
-
         return createComponent(
           styleManager,
           element.__ATYLED__.element,
           `atyled(${element.displayName})`,
-          `
-            ${originalDeclarationBlock}
-            ${overwriteDeclarationBlock}
-            ${restOfOriginalDeclarationBlocks}
-            ${restOfOverwriteDeclarationBlocks}
-          `
+          [...element.__ATYLED__.declarationBlock, ...compile(declarationBlock)]
         );
       } else {
         return createComponent(
           styleManager,
           element,
           `atyled(${element.displayName || (element as any).name})`,
-          declarationBlock
+          compile(declarationBlock)
         );
       }
     };
@@ -61,7 +43,7 @@ export function createAtyled() {
           styleManager,
           element,
           `atyled(${element})`,
-          declarationBlock
+          compile(declarationBlock)
         ))
   );
 

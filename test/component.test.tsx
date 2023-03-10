@@ -1,5 +1,6 @@
 import React from 'react';
 import { renderToString } from 'react-dom/server';
+import { compile } from 'stylis';
 import { createComponent } from '../src/component';
 import { createSelectorsManager } from '../src/selectors-manager';
 import { createRulesManager } from '../src/rules-manager';
@@ -14,7 +15,7 @@ describe('component', () => {
   const styleManager = createStyleManager(selectorsManager, rulesManager);
 
   test('should render a div without any classes', () => {
-    const Component = createComponent(styleManager, 'div', 'atyled(div)', ``);
+    const Component = createComponent(styleManager, 'div', 'atyled(div)', compile(``));
 
     const result = renderToString(<Component />);
 
@@ -23,7 +24,7 @@ describe('component', () => {
   });
 
   test('should render a div with a passed class name', () => {
-    const Component = createComponent(styleManager, 'div', 'atyled(div)', ``);
+    const Component = createComponent(styleManager, 'div', 'atyled(div)', compile(``));
 
     const result = renderToString(<Component className="a" />);
 
@@ -36,9 +37,9 @@ describe('component', () => {
       styleManager,
       'div',
       'atyled(div)',
-      `
+      compile(`
     a: b;    
-    `
+    `)
     );
 
     const result = renderToString(<Component className="a" />);
@@ -52,11 +53,11 @@ describe('component', () => {
       styleManager,
       'div',
       'atyled(div)',
-      `
+      compile(`
     a: b;
     b: b;
     c: d    
-    `
+    `)
     );
 
     const result = renderToString(<Component className="a" />);
@@ -66,7 +67,7 @@ describe('component', () => {
   });
 
   test('should clean up selectors', () => {
-    const Component = createComponent(styleManager, 'div', 'atyled(div)', ``);
+    const Component = createComponent(styleManager, 'div', 'atyled(div)', compile(``));
 
     const result = renderToString(
       <Component className="p0v0 p1v0 p0v1 p1v1 a" />
