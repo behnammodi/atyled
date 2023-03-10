@@ -25,7 +25,7 @@ export function createRulesManager(
     return valueToReturn.join('\n');
   }
 
-  function getStyleSheetWithTags(): string {
+  function getStyleSheetWithTag(): string {
     return `<style>
 ${getStyleSheet()}
 </style>`;
@@ -105,5 +105,5 @@ ${getStyleSheet()}
     return addRule(selector, property, value);
   }
 
-  return { add, getStyleSheetWithTags, getStyleSheet };
+  return { add, getStyleSheetWithTag, getStyleSheet };
 }
