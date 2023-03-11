@@ -9,7 +9,7 @@ export function createRulesManager(
   function assertCSSRulesIsAvailable(
     CSSRules?: CSSRuleList
   ): asserts CSSRules is CSSRuleList {
-    if (!CSSRules) throw 'cssRules not available';
+    if (!CSSRules) throw new Error('cssRules not available');
   }
 
   function getStyleSheet(): string {

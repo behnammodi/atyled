@@ -27,7 +27,15 @@ export type SelectorsManager = {
 };
 
 export type StyleManager = {
-  add: (declarationBlock: Element[]) => string;
+  attache: ({
+    rulesManager,
+    selectorsManager,
+  }: {
+    rulesManager: RulesManager;
+    selectorsManager: SelectorsManager;
+  }) => {
+    add: (declarationBlock: Element[]) => string;
+  };
   cleanUpSelectors: (selectors: string) => string;
 };
 
@@ -42,3 +50,9 @@ export type AtyledConstructor = (
 ) => ([declarationBlock]: TemplateStringsArray) => AtyledReactNode;
 
 export type Atyled = AtyledConstructor & AtyledElements;
+
+export type ServerContext = {
+  selectorsManager: SelectorsManager;
+  styleManager: StyleManager;
+  rulesManager: RulesManager;
+};

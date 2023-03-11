@@ -1,18 +1,35 @@
 import * as React from 'react';
 import { Element } from 'stylis';
-import { ReactNode, StyleManager, AtyledReactNode } from './type';
+import {
+  ReactNode,
+  StyleManager,
+  AtyledReactNode,
+  RulesManager,
+  SelectorsManager,
+  ServerContext,
+} from './type';
+import { Context } from './sheet-manager';
 
 export function createComponent(
   styleManager: StyleManager,
+  rulesManager: RulesManager,
+  selectorsManager: SelectorsManager,
   element: string | ReactNode,
   displayName: string,
   declarationBlock: Element[]
 ): AtyledReactNode {
   function Component(props: any) {
+    const serverContext = React.useContext<ServerContext | null>(Context);
+
     const selectors = React.useMemo<string>(() => {
-      const selectors = styleManager.add(declarationBlock);
+      const selectors = (serverContext?.styleManager || styleManager)
+        .attache({
+          rulesManager: serverContext?.rulesManager || rulesManager,
+          selectorsManager: serverContext?.selectorsManager || selectorsManager,
+        })
+        .add(declarationBlock);
       return selectors;
-    }, []);
+    }, [serverContext]);
 
     const { className, ...restProps } = props;
 

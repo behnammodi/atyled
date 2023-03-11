@@ -12,10 +12,17 @@ describe('component', () => {
 
   const rulesManager = createRulesManager(styleElement);
   const selectorsManager = createSelectorsManager();
-  const styleManager = createStyleManager(selectorsManager, rulesManager);
+  const styleManager = createStyleManager();
 
   test('should render a div without any classes', () => {
-    const Component = createComponent(styleManager, 'div', 'atyled(div)', compile(``));
+    const Component = createComponent(
+      styleManager,
+      rulesManager,
+      selectorsManager,
+      'div',
+      'atyled(div)',
+      compile(``)
+    );
 
     const result = renderToString(<Component />);
 
@@ -24,7 +31,14 @@ describe('component', () => {
   });
 
   test('should render a div with a passed class name', () => {
-    const Component = createComponent(styleManager, 'div', 'atyled(div)', compile(``));
+    const Component = createComponent(
+      styleManager,
+      rulesManager,
+      selectorsManager,
+      'div',
+      'atyled(div)',
+      compile(``)
+    );
 
     const result = renderToString(<Component className="a" />);
 
@@ -35,6 +49,8 @@ describe('component', () => {
   test('should render a div with a passed class name and 1 additional class', () => {
     const Component = createComponent(
       styleManager,
+      rulesManager,
+      selectorsManager,
       'div',
       'atyled(div)',
       compile(`
@@ -51,6 +67,8 @@ describe('component', () => {
   test('should render a div with a passed class name and 3 additional class', () => {
     const Component = createComponent(
       styleManager,
+      rulesManager,
+      selectorsManager,
       'div',
       'atyled(div)',
       compile(`
@@ -67,7 +85,14 @@ describe('component', () => {
   });
 
   test('should clean up selectors', () => {
-    const Component = createComponent(styleManager, 'div', 'atyled(div)', compile(``));
+    const Component = createComponent(
+      styleManager,
+      rulesManager,
+      selectorsManager,
+      'div',
+      'atyled(div)',
+      compile(``)
+    );
 
     const result = renderToString(
       <Component className="p0v0 p1v0 p0v1 p1v1 a" />

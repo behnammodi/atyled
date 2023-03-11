@@ -1,10 +1,7 @@
 import { Element } from 'stylis';
 import { RulesManager, SelectorsManager, StyleManager } from './type';
 
-export function createStyleManager(
-  selectorsManager: SelectorsManager,
-  rulesManager: RulesManager
-): StyleManager {
+export function createStyleManager(): StyleManager {
   const selectorsCache = new Map<string, string>();
   const declarationBlockCache = new Map<Element[], string>();
 
@@ -29,85 +26,97 @@ export function createStyleManager(
     return [decl, rule, at];
   }
 
-  function createMainSelectors(mainDeclarations: Element[]) {
-    return mainDeclarations.map(mainDeclaration => {
-      const property = mainDeclaration.props as string;
-      const value = mainDeclaration.children as string;
-      const selector = selectorsManager.add(property, value);
-      rulesManager.add(selector, property, value);
-      return selector;
-    });
-  }
-
-  function createRuleSelectors(ruleDeclarations: Element[]) {
-    return ruleDeclarations.map(pseudoDeclarationBlock => {
-      const additionalSelectorOrPseudo = pseudoDeclarationBlock.value.replace(
-        '&\f',
-        ''
-      );
-      const selectors: string[] = [];
-      for (let i = 0; i < pseudoDeclarationBlock.children.length; i++) {
-        const declaration = pseudoDeclarationBlock.children[i] as Element;
-        if (declaration.type !== 'decl') continue;
-        const property = declaration.props as string;
-        const value = declaration.children as string;
-        const selector = selectorsManager.add(
-          property,
-          value,
-          additionalSelectorOrPseudo
-        );
-
-        rulesManager.add(
-          `${selector}${additionalSelectorOrPseudo}`,
-          property,
-          value
-        );
-
-        selectors.push(selector);
-      }
-      return selectors.join(' ');
-    });
-  }
-
-  function createAtSelectors(atDeclarations: Element[]) {
-    return atDeclarations.map(atDeclarationBlock => {
-      const at = atDeclarationBlock.value;
-      const selectors: string[] = [];
-      for (let i = 0; i < atDeclarationBlock.children.length; i++) {
-        const declaration = atDeclarationBlock.children[i] as Element;
-        if (declaration.type !== 'decl') continue;
-        const property = declaration.props as string;
-        const value = declaration.children as string;
-        const selector = selectorsManager.add(`${property}${at}`, value);
-        rulesManager.add(selector, property, value, at);
-        selectors.push(selector);
-      }
-      return selectors.join(' ');
-    });
-  }
-
-  function add(declarationBlock: Element[]): string {
-    if (declarationBlockCache.has(declarationBlock)) {
-      return declarationBlockCache.get(declarationBlock) as string;
+  function attache({
+    rulesManager,
+    selectorsManager,
+  }: {
+    rulesManager: RulesManager;
+    selectorsManager: SelectorsManager;
+  }) {
+    function createMainSelectors(mainDeclarations: Element[]) {
+      return mainDeclarations.map(mainDeclaration => {
+        const property = mainDeclaration.props as string;
+        const value = mainDeclaration.children as string;
+        const selector = selectorsManager.add(property, value);
+        rulesManager.add(selector, property, value);
+        return selector;
+      });
     }
 
-    const [
-      mainDeclarations,
-      ruleDeclarations,
-      atDeclarations,
-    ] = extractElements(declarationBlock);
+    function createRuleSelectors(ruleDeclarations: Element[]) {
+      return ruleDeclarations.map(pseudoDeclarationBlock => {
+        const additionalSelectorOrPseudo = pseudoDeclarationBlock.value.replace(
+          '&\f',
+          ''
+        );
+        const selectors: string[] = [];
+        for (let i = 0; i < pseudoDeclarationBlock.children.length; i++) {
+          const declaration = pseudoDeclarationBlock.children[i] as Element;
+          if (declaration.type !== 'decl') continue;
+          const property = declaration.props as string;
+          const value = declaration.children as string;
+          const selector = selectorsManager.add(
+            property,
+            value,
+            additionalSelectorOrPseudo
+          );
 
-    const mainSelectors = createMainSelectors(mainDeclarations);
-    const ruleSelectors = createRuleSelectors(ruleDeclarations);
-    const atSelectors = createAtSelectors(atDeclarations);
+          rulesManager.add(
+            `${selector}${additionalSelectorOrPseudo}`,
+            property,
+            value
+          );
 
-    const selectors = [...mainSelectors, ...ruleSelectors, ...atSelectors].join(
-      ' '
-    );
+          selectors.push(selector);
+        }
+        return selectors.join(' ');
+      });
+    }
 
-    declarationBlockCache.set(declarationBlock, selectors);
+    function createAtSelectors(atDeclarations: Element[]) {
+      return atDeclarations.map(atDeclarationBlock => {
+        const at = atDeclarationBlock.value;
+        const selectors: string[] = [];
+        for (let i = 0; i < atDeclarationBlock.children.length; i++) {
+          const declaration = atDeclarationBlock.children[i] as Element;
+          if (declaration.type !== 'decl') continue;
+          const property = declaration.props as string;
+          const value = declaration.children as string;
+          const selector = selectorsManager.add(`${property}${at}`, value);
+          rulesManager.add(selector, property, value, at);
+          selectors.push(selector);
+        }
+        return selectors.join(' ');
+      });
+    }
 
-    return selectors;
+    function add(declarationBlock: Element[]): string {
+      if (declarationBlockCache.has(declarationBlock)) {
+        return declarationBlockCache.get(declarationBlock) as string;
+      }
+
+      const [
+        mainDeclarations,
+        ruleDeclarations,
+        atDeclarations,
+      ] = extractElements(declarationBlock);
+
+      const mainSelectors = createMainSelectors(mainDeclarations);
+      const ruleSelectors = createRuleSelectors(ruleDeclarations);
+      const atSelectors = createAtSelectors(atDeclarations);
+
+      const selectors = [
+        ...mainSelectors,
+        ...ruleSelectors,
+        ...atSelectors,
+      ].join(' ');
+
+      declarationBlockCache.set(declarationBlock, selectors);
+
+      return selectors;
+    }
+
+    return { add };
   }
 
   function cleanUpSelectors(selectors: string): string {
@@ -143,5 +152,5 @@ export function createStyleManager(
     return valueToReturn;
   }
 
-  return { add, cleanUpSelectors };
+  return { attache, cleanUpSelectors };
 }

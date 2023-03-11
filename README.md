@@ -7,7 +7,7 @@
 - It generate atomic classes
 - Final stylesheet is very optimized and small
 - It's tiny and less than 2KB
-- SSR support (🚧 in-progress)
+- SSR support
 - Faster than `styled-components`
 - No overwrite rules
 
@@ -119,4 +119,15 @@ StyleSheet:
 .p2v16 { --color: white; }
 .p9v17:hover { color: greenyellow; }
 .p12v18::before { content: ' ☀︎ '; }
+```
+
+## SSR (Server Side Rendering)
+
+```jsx
+const { jsx, getStyleSheet, getStyleTags } = createStyleCollector(<App />);
+      
+const html = React.renderToString(jsx);
+
+getStyleSheet() // return all style rules
+getStyleTags()  // return all style rules + tag <style>...</style>
 ```

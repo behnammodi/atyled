@@ -1,4 +1,4 @@
-function numberOfSomething(value: string, something: string) {
+function numberOfSomething(value: string, something: string): number {
   if (!value) {
     return 0;
   }

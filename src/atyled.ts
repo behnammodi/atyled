@@ -12,13 +12,15 @@ export function createAtyled() {
 
   const rulesManager = createRulesManager(styleElement);
   const selectorsManager = createSelectorsManager();
-  const styleManager = createStyleManager(selectorsManager, rulesManager);
+  const styleManager = createStyleManager();
 
   function atyled(element: AtyledReactNode) {
     return ([declarationBlock]: TemplateStringsArray) => {
       if (element.__ATYLED__) {
         return createComponent(
           styleManager,
+          rulesManager,
+          selectorsManager,
           element.__ATYLED__.element,
           `atyled(${element.displayName})`,
           [...element.__ATYLED__.declarationBlock, ...compile(declarationBlock)]
@@ -26,6 +28,8 @@ export function createAtyled() {
       } else {
         return createComponent(
           styleManager,
+          rulesManager,
+          selectorsManager,
           element,
           `atyled(${element.displayName || (element as any).name})`,
           compile(declarationBlock)
@@ -41,6 +45,8 @@ export function createAtyled() {
       ]: TemplateStringsArray) =>
         createComponent(
           styleManager,
+          rulesManager,
+          selectorsManager,
           element,
           `atyled(${element})`,
           compile(declarationBlock)
