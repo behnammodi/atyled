@@ -124,6 +124,7 @@ StyleSheet:
 ## SSR (Server Side Rendering)
 
 ```jsx
+import { createStyleCollector } from 'atyled';
 const { jsx, getStyleSheet, getStyleTags } = createStyleCollector(<App />);
       
 const html = React.renderToString(jsx);
