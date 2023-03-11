@@ -2,6 +2,8 @@ import { StyleElement } from './type';
 
 function createClientStyleElement(): StyleElement {
   const element = document.createElement('style');
+  document.head.append(element);
+
   const deleteRule = (index: number): void =>
     (element.sheet as CSSStyleSheet).deleteRule(index);
 
@@ -34,4 +36,17 @@ function createServerStyleElement(): StyleElement {
   return { cssRules, deleteRule, insertRule };
 }
 
-export { createClientStyleElement, createServerStyleElement };
+function createStyleElement() {
+  const isNode =
+    typeof process !== 'undefined' &&
+    process.versions != null &&
+    process.versions.node != null;
+
+  return isNode ? createServerStyleElement() : createClientStyleElement();
+}
+
+export {
+  createStyleElement,
+  createClientStyleElement,
+  createServerStyleElement,
+};

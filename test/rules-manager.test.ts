@@ -4,7 +4,6 @@ import { createClientStyleElement } from '../src/style-element';
 describe('createRulesManager', () => {
   test('should has 2 rules', () => {
     const styleElement = createClientStyleElement();
-    document.head.append(styleElement.element as HTMLStyleElement);
 
     const rulesManager = createRulesManager(styleElement);
 
@@ -33,7 +32,6 @@ describe('createRulesManager', () => {
 
   test('should handle Pseudo Elements', () => {
     const styleElement = createClientStyleElement();
-    document.head.append(styleElement.element as HTMLStyleElement);
     const rulesManager = createRulesManager(styleElement);
 
     [
@@ -71,7 +69,6 @@ describe('createRulesManager', () => {
 
   test('should handle Pseudo Classes', () => {
     const styleElement = createClientStyleElement();
-    document.head.append(styleElement.element as HTMLStyleElement);
     const rulesManager = createRulesManager(styleElement);
 
     [

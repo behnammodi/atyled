@@ -6,7 +6,6 @@ import {
 describe('style-element', () => {
   test('should add remove and read rules same on client and server', () => {
     const clientStyleElement = createClientStyleElement();
-    document.head.append(clientStyleElement.element as HTMLStyleElement);
     const serverStyleElement = createServerStyleElement();
 
     clientStyleElement.insertRule('.a {b: c;}');

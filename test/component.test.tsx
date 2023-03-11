@@ -9,7 +9,6 @@ import { createClientStyleElement } from '../src/style-element';
 
 describe('component', () => {
   const styleElement = createClientStyleElement();
-  document.head.append(styleElement.element as HTMLStyleElement);
 
   const rulesManager = createRulesManager(styleElement);
   const selectorsManager = createSelectorsManager();
