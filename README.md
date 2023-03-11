@@ -13,8 +13,6 @@
 
 ## Example
 
-[Codesandbox](https://codesandbox.io/s/atyled-example-1-vxhd58)
-
 ```js
 import atyled from 'atyled';
 
@@ -132,3 +130,9 @@ const html = React.renderToString(jsx);
 getStyleSheet() // return all style rules
 getStyleTags()  // return all style rules + tag <style>...</style>
 ```
+
+## Examples
+
+[atyled](https://codesandbox.io/s/atyled-example-1-vxhd58)
+
+[atyled + nextjs](https://codesandbox.io/p/sandbox/fast-breeze-4bxfz1?file=%2FREADME.md)
