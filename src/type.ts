@@ -56,3 +56,10 @@ export type ServerContext = {
   styleManager: StyleManager;
   rulesManager: RulesManager;
 };
+
+export type StyleElement = {
+  cssRules: Array<Pick<CSSRule, 'cssText'>>;
+  deleteRule(index: number): void;
+  insertRule(rule: string, index?: number | undefined): number;
+  element?: HTMLStyleElement;
+};

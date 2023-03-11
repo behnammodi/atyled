@@ -5,10 +5,11 @@ import { createComponent } from '../src/component';
 import { createSelectorsManager } from '../src/selectors-manager';
 import { createRulesManager } from '../src/rules-manager';
 import { createStyleManager } from '../src/style-manager';
+import { createClientStyleElement } from '../src/style-element';
 
 describe('component', () => {
-  const styleElement = document.createElement('style');
-  document.head.append(styleElement);
+  const styleElement = createClientStyleElement();
+  document.head.append(styleElement.element as HTMLStyleElement);
 
   const rulesManager = createRulesManager(styleElement);
   const selectorsManager = createSelectorsManager();

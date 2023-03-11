@@ -1,22 +1,18 @@
-import { RulesManager } from './type';
+import { RulesManager, StyleElement } from './type';
 
-export function createRulesManager(
-  styleElement: HTMLStyleElement
-): RulesManager {
+export function createRulesManager(styleElement: StyleElement): RulesManager {
   const selectors = new Set<string>();
   const atIndexes = new Map<string, number>();
 
-  function assertCSSRulesIsAvailable(
-    CSSRules?: CSSRuleList
-  ): asserts CSSRules is CSSRuleList {
-    if (!CSSRules) throw new Error('cssRules not available');
-  }
+  // function assertCSSRulesIsAvailable(
+  //   CSSRules?: CSSRuleList
+  // ): asserts CSSRules is CSSRuleList {
+  //   if (!CSSRules) throw new Error('cssRules not available');
+  // }
 
   function getStyleSheet(): string {
     const valueToReturn: string[] = [];
-    const cssRules = styleElement.sheet?.cssRules;
-
-    assertCSSRulesIsAvailable(cssRules);
+    const cssRules = styleElement.cssRules;
 
     for (let cssRule in cssRules) {
       valueToReturn.push(cssRules[cssRule].cssText);
@@ -55,21 +51,19 @@ ${getStyleSheet()}
       return;
     }
 
-    const sheet = styleElement.sheet as CSSStyleSheet;
-
     const indexOfAt = atIndexes.get(at);
 
     if (indexOfAt !== undefined) {
       const rule = createRule(selector, property, value);
-      const previousCSSText = sheet.cssRules[indexOfAt].cssText;
+      const previousCSSText = styleElement.cssRules[indexOfAt].cssText;
       const newCSSText: string =
         previousCSSText.substring(0, previousCSSText.length - 1) + rule + '}';
 
-      sheet.deleteRule(indexOfAt);
-      sheet.insertRule(newCSSText, indexOfAt);
+      styleElement.deleteRule(indexOfAt);
+      styleElement.insertRule(newCSSText, indexOfAt);
     } else {
       const rule = createRule(selector, property, value, at);
-      const index = sheet.insertRule(rule, sheet.cssRules.length);
+      const index = styleElement.insertRule(rule, styleElement.cssRules.length);
       atIndexes.set(at, index);
     }
 
@@ -83,11 +77,9 @@ ${getStyleSheet()}
       return;
     }
 
-    const sheet = styleElement.sheet as CSSStyleSheet;
-
     const rule = createRule(selector, property, value);
 
-    sheet.insertRule(rule, sheet.cssRules.length);
+    styleElement.insertRule(rule, styleElement.cssRules.length);
 
     selectors.add(key);
   }

@@ -1,0 +1,37 @@
+import { StyleElement } from './type';
+
+function createClientStyleElement(): StyleElement {
+  const element = document.createElement('style');
+  const deleteRule = (index: number): void =>
+    (element.sheet as CSSStyleSheet).deleteRule(index);
+
+  const insertRule = (rule: string, index?: number | undefined): number =>
+    (element.sheet as CSSStyleSheet).insertRule(rule, index);
+
+  return {
+    get cssRules() {
+      return ((element.sheet as CSSStyleSheet)
+        .cssRules as unknown) as StyleElement['cssRules'];
+    },
+    deleteRule,
+    insertRule,
+    element,
+  };
+}
+
+function createServerStyleElement(): StyleElement {
+  const cssRules = [] as StyleElement['cssRules'];
+
+  const deleteRule = (index: number): void => {
+    cssRules.splice(index, 1);
+  };
+
+  const insertRule = (rule: string, index: number): number => {
+    cssRules.splice(index, 0, { cssText: rule });
+    return index;
+  };
+
+  return { cssRules, deleteRule, insertRule };
+}
+
+export { createClientStyleElement, createServerStyleElement };

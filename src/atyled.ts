@@ -5,10 +5,11 @@ import { createRulesManager } from './rules-manager';
 import { createStyleManager } from './style-manager';
 import elements from './elements';
 import { Atyled, AtyledElements, AtyledReactNode } from './type';
+import { createClientStyleElement } from './style-element';
 
 export function createAtyled() {
-  const styleElement = document.createElement('style');
-  document.head.append(styleElement);
+  const styleElement = createClientStyleElement();
+  document.head.append(styleElement.element as HTMLStyleElement);
 
   const rulesManager = createRulesManager(styleElement);
   const selectorsManager = createSelectorsManager();

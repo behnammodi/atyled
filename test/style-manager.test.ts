@@ -2,18 +2,24 @@ import { compile } from 'stylis';
 import { createSelectorsManager } from '../src/selectors-manager';
 import { createRulesManager } from '../src/rules-manager';
 import { createStyleManager } from '../src/style-manager';
+import { createClientStyleElement } from '../src/style-element';
 
 describe('createStyleManager', () => {
   function createStyleManagerForEachTest() {
-    const styleElement = document.createElement('style');
-    document.head.append(styleElement);
+    const styleElement = createClientStyleElement();
+    document.head.append(styleElement.element as HTMLStyleElement);
     const rulesManager = createRulesManager(styleElement);
 
     const selectorsManager = createSelectorsManager();
 
     const styleManager = createStyleManager();
 
-    return { styleManager, rulesManager, selectorsManager, styleElement };
+    return {
+      styleManager,
+      rulesManager,
+      selectorsManager,
+      styleElement: styleElement,
+    };
   }
 
   test('should create a selector', () => {
@@ -208,10 +214,8 @@ describe('createStyleManager', () => {
       );
 
     expect(selectors).toEqual('p0v0 p1v1');
-    expect((styleElement.sheet?.cssRules[0] as any).selectorText).toBe('.p0v0');
-    expect((styleElement.sheet?.cssRules[1] as any).selectorText).toBe(
-      '.p1v1:hover'
-    );
+    expect((styleElement.cssRules[0] as any).selectorText).toBe('.p0v0');
+    expect((styleElement.cssRules[1] as any).selectorText).toBe('.p1v1:hover');
   });
 
   test('should create 2 classes for :hover', () => {
@@ -235,13 +239,9 @@ describe('createStyleManager', () => {
       );
 
     expect(selectors).toEqual('p0v0 p1v1 p2v2');
-    expect((styleElement.sheet?.cssRules[0] as any).selectorText).toBe('.p0v0');
-    expect((styleElement.sheet?.cssRules[1] as any).selectorText).toBe(
-      '.p1v1:hover'
-    );
-    expect((styleElement.sheet?.cssRules[2] as any).selectorText).toBe(
-      '.p2v2:hover'
-    );
+    expect((styleElement.cssRules[0] as any).selectorText).toBe('.p0v0');
+    expect((styleElement.cssRules[1] as any).selectorText).toBe('.p1v1:hover');
+    expect((styleElement.cssRules[2] as any).selectorText).toBe('.p2v2:hover');
   });
 
   test('should create 1 classes for :hover cause of duplication', () => {
@@ -265,11 +265,9 @@ describe('createStyleManager', () => {
       );
 
     expect(selectors).toEqual('p0v0 p1v1 p1v1');
-    expect((styleElement.sheet?.cssRules[0] as any).selectorText).toBe('.p0v0');
-    expect((styleElement.sheet?.cssRules[1] as any).selectorText).toBe(
-      '.p1v1:hover'
-    );
-    expect(styleElement.sheet?.cssRules).toHaveLength(2);
+    expect((styleElement.cssRules[0] as any).selectorText).toBe('.p0v0');
+    expect((styleElement.cssRules[1] as any).selectorText).toBe('.p1v1:hover');
+    expect(styleElement.cssRules).toHaveLength(2);
   });
 
   test('should create additional class for ::before', () => {
@@ -292,11 +290,11 @@ describe('createStyleManager', () => {
       );
 
     expect(selectors).toEqual('p0v0 p1v1');
-    expect((styleElement.sheet?.cssRules[0] as any).selectorText).toBe('.p0v0');
-    expect((styleElement.sheet?.cssRules[1] as any).selectorText).toBe(
+    expect((styleElement.cssRules[0] as any).selectorText).toBe('.p0v0');
+    expect((styleElement.cssRules[1] as any).selectorText).toBe(
       '.p1v1::before'
     );
-    expect(styleElement.sheet?.cssRules).toHaveLength(2);
+    expect(styleElement.cssRules).toHaveLength(2);
   });
 
   test('should create 2 additional class for :hover and ::before', () => {
@@ -323,14 +321,12 @@ describe('createStyleManager', () => {
       );
 
     expect(selectors).toEqual('p0v0 p1v1 p2v1');
-    expect((styleElement.sheet?.cssRules[0] as any).selectorText).toBe('.p0v0');
-    expect((styleElement.sheet?.cssRules[1] as any).selectorText).toBe(
-      '.p1v1:hover'
-    );
-    expect((styleElement.sheet?.cssRules[2] as any).selectorText).toBe(
+    expect((styleElement.cssRules[0] as any).selectorText).toBe('.p0v0');
+    expect((styleElement.cssRules[1] as any).selectorText).toBe('.p1v1:hover');
+    expect((styleElement.cssRules[2] as any).selectorText).toBe(
       '.p2v1::before'
     );
-    expect(styleElement.sheet?.cssRules).toHaveLength(3);
+    expect(styleElement.cssRules).toHaveLength(3);
   });
 
   test('should create 3 additional class for :hover ::before > div and additional composition', () => {
@@ -366,18 +362,14 @@ describe('createStyleManager', () => {
       );
 
     expect(selectors).toEqual('p0v0 p1v1 p2v1 p3v1 p0v0 p4v2');
-    expect((styleElement.sheet?.cssRules[0] as any).selectorText).toBe('.p0v0');
-    expect((styleElement.sheet?.cssRules[1] as any).selectorText).toBe(
-      '.p1v1:hover'
-    );
-    expect((styleElement.sheet?.cssRules[2] as any).selectorText).toBe(
+    expect((styleElement.cssRules[0] as any).selectorText).toBe('.p0v0');
+    expect((styleElement.cssRules[1] as any).selectorText).toBe('.p1v1:hover');
+    expect((styleElement.cssRules[2] as any).selectorText).toBe(
       '.p2v1::before'
     );
-    expect((styleElement.sheet?.cssRules[3] as any).selectorText).toBe(
-      '.p3v1>div'
-    );
-    expect((styleElement.sheet?.cssRules[4] as any).selectorText).toBe('.p4v2');
-    expect(styleElement.sheet?.cssRules).toHaveLength(5);
+    expect((styleElement.cssRules[3] as any).selectorText).toBe('.p3v1>div');
+    expect((styleElement.cssRules[4] as any).selectorText).toBe('.p4v2');
+    expect(styleElement.cssRules).toHaveLength(5);
   });
 
   test('should return 5 classes for @media and remove their comments', () => {
@@ -417,13 +409,13 @@ describe('createStyleManager', () => {
       );
 
     expect(selectors).toBe('p0v0 p1v0 p1v1 p0v1 p2v0');
-    expect(styleElement.sheet?.cssRules[0].cssText).toBe(
+    expect(styleElement.cssRules[0].cssText).toBe(
       '@media (max-width:200px) {.p0v0 {a: b;}.p0v1 {a: c;}}'
     );
-    expect(styleElement.sheet?.cssRules[1].cssText).toBe(
+    expect(styleElement.cssRules[1].cssText).toBe(
       '@media (max-width:400px) {.p1v0 {a: b;}.p1v1 {a: c;}}'
     );
-    expect(styleElement.sheet?.cssRules[2].cssText).toBe(
+    expect(styleElement.cssRules[2].cssText).toBe(
       '@media (max-width:300px) {.p2v0 {a: b;}}'
     );
   });
