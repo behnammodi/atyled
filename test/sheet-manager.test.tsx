@@ -18,9 +18,7 @@ describe('createServerStyleSheet', () => {
       return <Container>{showItem && <Item>Atyled</Item>}</Container>;
     }
 
-    const { jsx, getStyleSheet, getStyleTags } = createStyleCollector(
-      <App />
-    );
+    const { jsx, getStyleSheet, getStyleTags } = createStyleCollector(<App />);
     renderToString(jsx);
 
     expect(getStyleSheet()).toBe(
@@ -28,10 +26,10 @@ describe('createServerStyleSheet', () => {
     );
     expect(getStyleTags()).toBe(
       '<style>\n' +
-      '.p0v0 {display: flex;}\n' +
-      '.p1v1 {flex: 1;}\n' +
-      '.p2v2 {margin: 8px;}\n' +
-      '</style>'
+        '.p0v0 {display: flex;}\n' +
+        '.p1v1 {flex: 1;}\n' +
+        '.p2v2 {margin: 8px;}\n' +
+        '</style>'
     );
   });
 
@@ -61,10 +59,10 @@ describe('createServerStyleSheet', () => {
       );
       expect(getStyleTags()).toBe(
         '<style>\n' +
-        '.p0v0 {display: flex;}\n' +
-        '.p1v1 {flex: 1;}\n' +
-        '.p2v2 {margin: 8px;}\n' +
-        '</style>'
+          '.p0v0 {display: flex;}\n' +
+          '.p1v1 {flex: 1;}\n' +
+          '.p2v2 {margin: 8px;}\n' +
+          '</style>'
       );
     }
 
@@ -80,23 +78,27 @@ describe('createServerStyleSheet', () => {
       );
       expect(getStyleTags()).toBe(
         '<style>\n' +
-        '.p0v0 {display: flex;}\n' +
-        '.p1v1 {flex: 1;}\n' +
-        '.p2v2 {margin: 8px;}\n' +
-        '</style>'
+          '.p0v0 {display: flex;}\n' +
+          '.p1v1 {flex: 1;}\n' +
+          '.p2v2 {margin: 8px;}\n' +
+          '</style>'
       );
     }
 
     // third run with different structure
     {
-      const { jsx, getStyleSheet, getStyleTags } = createStyleCollector(<App showItem={false} />);
-      renderToString(jsx)
+      const { jsx, getStyleSheet, getStyleTags } = createStyleCollector(
+        <App showItem={false} />
+      );
+      renderToString(jsx);
 
-      expect(getStyleSheet()).toBe('.p0v0 {display: flex;}\n.p1v1 {flex: 1;}')
-      expect(getStyleTags()).toBe('<style>\n' +
-        '.p0v0 {display: flex;}\n' +
-        '.p1v1 {flex: 1;}\n' +
-        '</style>');
+      expect(getStyleSheet()).toBe('.p0v0 {display: flex;}\n.p1v1 {flex: 1;}');
+      expect(getStyleTags()).toBe(
+        '<style>\n' +
+          '.p0v0 {display: flex;}\n' +
+          '.p1v1 {flex: 1;}\n' +
+          '</style>'
+      );
     }
   });
 });
