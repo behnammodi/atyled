@@ -54,11 +54,11 @@
   "size-limit": [
     {
       "path": "dist/atyled.cjs.production.min.js",
-      "limit": "2 KB"
+      "limit": "2.5 KB"
     },
     {
       "path": "dist/atyled.esm.js",
-      "limit": "2 KB"
+      "limit": "2.5 KB"
     }
   ],
   "devDependencies": {

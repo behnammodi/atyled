@@ -43,7 +43,19 @@ export function createStyleManager(): StyleManager {
       });
     }
 
-    function createRuleSelectors(ruleDeclarations: Element[]) {
+    /**
+     * at for nested rule inside @media ex:
+     * a:b;
+     * &::before {
+     *  c:a;
+     * }
+     * @media (max:300px){
+     *  &::before {
+     *    c:b;
+     *  }
+     * }
+     */
+    function createRuleSelectors(ruleDeclarations: Element[], at: string = '') {
       return ruleDeclarations.map(pseudoDeclarationBlock => {
         const additionalSelectorOrPseudo = pseudoDeclarationBlock.value.replace(
           '&\f',
@@ -56,7 +68,7 @@ export function createStyleManager(): StyleManager {
           const property = declaration.props as string;
           const value = declaration.children as string;
           const selector = selectorsManager.add(
-            property,
+            `${at}${property}`,
             value,
             additionalSelectorOrPseudo
           );
@@ -64,7 +76,8 @@ export function createStyleManager(): StyleManager {
           rulesManager.add(
             `${selector}${additionalSelectorOrPseudo}`,
             property,
-            value
+            value,
+            at
           );
 
           selectors.push(selector);
@@ -79,12 +92,24 @@ export function createStyleManager(): StyleManager {
         const selectors: string[] = [];
         for (let i = 0; i < atDeclarationBlock.children.length; i++) {
           const declaration = atDeclarationBlock.children[i] as Element;
-          if (declaration.type !== 'decl') continue;
-          const property = declaration.props as string;
-          const value = declaration.children as string;
-          const selector = selectorsManager.add(`${property}${at}`, value);
-          rulesManager.add(selector, property, value, at);
-          selectors.push(selector);
+          if (declaration.type === 'decl') {
+            const property = declaration.props as string;
+            const value = declaration.children as string;
+            const selector = selectorsManager.add(`${at}${property}`, value);
+            rulesManager.add(selector, property, value, at);
+            selectors.push(selector);
+          } else if (declaration.type === 'rule') {
+            /**
+             * handle rule inside @media ex:
+             * * @media (max:300px){
+             *  &::before {
+             *    c:b;
+             *  }
+             * }
+             */
+            const selector = createRuleSelectors([declaration], at);
+            selectors.push(selector.join(' '));
+          }
         }
         return selectors.join(' ');
       });

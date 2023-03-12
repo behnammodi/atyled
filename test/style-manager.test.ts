@@ -446,4 +446,41 @@ describe('createStyleManager', () => {
 
     expect(selectors).toBe('p0v0 p1v3');
   });
+
+  test('should create a selector for nested query', () => {
+    const {
+      styleManager,
+      rulesManager,
+      selectorsManager,
+    } = createStyleManagerForEachTest();
+    const selectors = styleManager
+      .attache({ rulesManager, selectorsManager })
+      .add(
+        compile(`
+    a: b;    
+    
+    &::before {
+      x: y;
+    }
+
+    @media (max-width:300px) {
+      a: c;
+      &::before {
+        x: z;
+      }
+    }
+
+    @media (max-width:300px) {
+      &::before {
+        x: x;
+      }
+    }
+    `)
+      );
+
+    expect(selectors).toEqual('p0v0 p1v1 p2v2 p3v3 p3v4');
+    expect(rulesManager.getStyleSheet()).toBe(`.p0v0 {a: b;}
+.p1v1::before {x: y;}
+@media (max-width:300px) {.p2v2 {a: c;}.p3v3::before {x: z;}.p3v4::before {x: x;}}`);
+  });
 });
