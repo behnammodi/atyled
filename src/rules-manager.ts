@@ -4,21 +4,8 @@ export function createRulesManager(styleElement: StyleElement): RulesManager {
   const selectors = new Set<string>();
   const atIndexes = new Map<string, number>();
 
-  // function assertCSSRulesIsAvailable(
-  //   CSSRules?: CSSRuleList
-  // ): asserts CSSRules is CSSRuleList {
-  //   if (!CSSRules) throw new Error('cssRules not available');
-  // }
-
   function getStyleSheet(): string {
-    const valueToReturn: string[] = [];
-    const cssRules = styleElement.cssRules;
-
-    for (let cssRule in cssRules) {
-      valueToReturn.push(cssRules[cssRule].cssText);
-    }
-
-    return valueToReturn.join('\n');
+    return styleElement.cssRules.map(cssRule => cssRule.cssText).join('\n');
   }
 
   function getStyleSheetWithTag(): string {
