@@ -13,6 +13,8 @@
 
 ## Example
 
+[Edit on Codesandbox](https://codesandbox.io/s/atyled-readme-sample-79rco6)
+
 ```js
 import atyled from 'atyled';
 
@@ -20,27 +22,14 @@ const Button = atyled.button`
   --background: transparent;
   --color: #FF0000;
   background: var(--background);
-  color: var(--color);
-  border-radius: 3px;
-  border: 2px solid #FF0000;
-  margin: 0.5em 1em;
-  padding: 0.25em 1em;  
+  color: var(--color);  
 
   &:hover {
-    color: orange;
-    background: gray;
-    border: 2px solid orange;
+    color: orange;    
   }
 
   &::before {
     content: ' ★ ';
-    font-size: 15px;
-  }
-
-  /* media */
-  @media (max-width: 500px) {
-    width: 5px;    
-    overflow: hidden
   }
 `;
 
@@ -48,17 +37,8 @@ const PrimaryButton = atyled(Button)`
   --background: #FF0000;
   --color: white;
 
-  &:hover {
-    color: greenyellow;
-  }
-
   &::before {
     content: ' ☀︎ ';
-  }
-
-  /* overwrite media */
-  @media (max-width: 500px) {
-    width: auto;
   }
 `;
 
@@ -82,16 +62,8 @@ HTML:
 
 ```html
 <div class="p0v0">
-  <button
-    class="p1v1 p2v2 p3v3 p4v4 p5v5 p6v6 p7v7 p8v8 p9v9 p10v10 p11v11 p12v12 p13v13 p14v14 p15v15"
-  >
-    Normal Button
-  </button>
-  <button
-    class="p3v3 p4v4 p5v5 p6v6 p7v7 p8v8 p1v2 p2v16 p10v10 p11v11 p13v13 p9v17 p12v18 p15v15 p14v19"
-  >
-    Primary Button
-  </button>
+  <button class="p1v1 p2v2 p3v3 p4v4 p5v5 p6v6">Normal Button</button>
+  <button class="p3v3 p4v4 p1v2 p2v7 p5v5 p6v8">Primary Button</button>
 </div>
 ```
 
@@ -100,23 +72,14 @@ StyleSheet:
 ```css
 .p0v0 { text-align: center; }
 .p1v1 { --background: transparent; }
-.p2v2 { --color: #ff0000; }
+.p2v2 { --color: #FF0000; }
 .p3v3 { background: var(--background); }
 .p4v4 { color: var(--color); }
-.p5v5 { border-radius: 3px; }
-.p6v6 { border: 2px solid rgb(255, 0, 0); }
-.p7v7 { margin: 0.5em 1em; }
-.p8v8 { padding: 0.25em 1em; }
-.p9v9:hover { color: orange; }
-.p10v10:hover { background: gray; }
-.p11v11:hover { border: 2px solid orange; }
-.p12v12::before { content: ' ★ '; }
-.p13v13::before { font-size: 15px; }
-@media (max-width: 500px) {.p14v14 { width: 5px;}.p15v15 {overflow: hidden;}.p14v19 {width: auto;}}
-.p1v2 { --background: #ff0000; }
-.p2v16 { --color: white; }
-.p9v17:hover { color: greenyellow; }
-.p12v18::before { content: ' ☀︎ '; }
+.p5v5:hover { color: orange; }
+.p6v6::before { content: " ★ "; }
+.p1v2 { --background: #FF0000; }
+.p2v7 { --color: white; }
+.p6v8::before { content: " ☀︎ "; }
 ```
 
 ## SSR (Server Side Rendering)
