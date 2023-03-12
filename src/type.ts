@@ -15,7 +15,7 @@ export type AtyledReactNode = ReactNode & {
 export type RulesManager = {
   add: (selector: string, property: string, value: string, at?: string) => void;
   getStyleSheet: () => string;
-  getStyleSheetWithTag: () => string;
+  getStyleTags: () => string;
 };
 
 export type SelectorsManager = {

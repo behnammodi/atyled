@@ -28,7 +28,7 @@ function createServerStyleElement(): StyleElement {
     cssRules.splice(index, 1);
   };
 
-  const insertRule = (rule: string, index: number): number => {
+  const insertRule = (rule: string, index: number = 0): number => {
     cssRules.splice(index, 0, { cssText: rule });
     return index;
   };

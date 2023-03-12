@@ -24,7 +24,7 @@ describe('createRulesManager', () => {
     expect(rulesManager.getStyleSheet()).toBe(`.a {b: c;}
 .d {e: f;}`);
 
-    expect(rulesManager.getStyleSheetWithTag()).toBe(`<style>
+    expect(rulesManager.getStyleTags()).toBe(`<style>
 .a {b: c;}
 .d {e: f;}
 </style>`);
@@ -57,7 +57,7 @@ describe('createRulesManager', () => {
 .a::marker {b: c;}
 .a::selection {b: c;}`);
 
-    expect(rulesManager.getStyleSheetWithTag()).toBe(`<style>
+    expect(rulesManager.getStyleTags()).toBe(`<style>
 .a::after {b: c;}
 .a::before {b: c;}
 .a::first-letter {b: c;}
@@ -94,7 +94,7 @@ describe('createRulesManager', () => {
 .a:not(p) {b: c;}
 .a:nth-child(2) {b: c;}`);
 
-    expect(rulesManager.getStyleSheetWithTag()).toBe(`<style>
+    expect(rulesManager.getStyleTags()).toBe(`<style>
 .a:active {b: c;}
 .a:first-child {b: c;}
 .a:first-of-type {b: c;}

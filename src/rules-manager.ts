@@ -8,7 +8,7 @@ export function createRulesManager(styleElement: StyleElement): RulesManager {
     return styleElement.cssRules.map(cssRule => cssRule.cssText).join('\n');
   }
 
-  function getStyleSheetWithTag(): string {
+  function getStyleTags(): string {
     return `<style>
 ${getStyleSheet()}
 </style>`;
@@ -84,5 +84,5 @@ ${getStyleSheet()}
     return addRule(selector, property, value);
   }
 
-  return { add, getStyleSheetWithTag, getStyleSheet };
+  return { add, getStyleTags, getStyleSheet };
 }

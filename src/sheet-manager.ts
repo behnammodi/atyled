@@ -12,8 +12,8 @@ export default function createStyleCollector(Component: ReactNode) {
   const styleManager = createStyleManager();
   const selectorsManager = createSelectorsManager();
   const rulesManager = createRulesManager(styleElement);
-  // TODO update getStyleSheetWithTag to getStyleTags
-  const { getStyleSheet, getStyleSheetWithTag: getStyleTags } = rulesManager;
+
+  const { getStyleSheet, getStyleTags } = rulesManager;
 
   const jsx = createElement(
     Context.Provider,
