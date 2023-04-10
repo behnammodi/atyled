@@ -45,12 +45,12 @@
   "author": "Behnam Mohammadi",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/atyled/atyled.git"
+    "url": "git+https://github.com/behnammodi/atyled"
   },
   "bugs": {
-    "url": "https://github.com/atyled/atyled.git/issues"
+    "url": "https://github.com/behnammodi/atyled/issues"
   },
-  "homepage": "https://github.com/atyled/atyled.git#readme",
+  "homepage": "https://github.com/behnammodi/atyled#readme",
   "module": "dist/atyled.esm.js",
   "size-limit": [
     {
