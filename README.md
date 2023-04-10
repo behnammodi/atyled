@@ -22,10 +22,10 @@ const Button = atyled.button`
   --background: transparent;
   --color: #FF0000;
   background: var(--background);
-  color: var(--color);  
+  color: var(--color);
 
   &:hover {
-    color: orange;    
+    color: orange;
   }
 
   &::before {

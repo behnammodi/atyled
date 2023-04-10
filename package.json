@@ -50,7 +50,7 @@
   "bugs": {
     "url": "https://github.com/behnammodi/atyled/issues"
   },
-  "homepage": "https://github.com/behnammodi/atyled#readme",
+  "homepage": "https://github.com/behnammodi/atyled.git#readme",
   "module": "dist/atyled.esm.js",
   "size-limit": [
     {
